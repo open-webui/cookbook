@@ -25,11 +25,13 @@ These challenges share a common root: firms need AI they can *control*, *observe
 
 ## What a Legal AI Platform Needs
 
-Any AI platform worth deploying in a law firm needs to address all three problems above. Here's what that looks like in practice — and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, delivers each one:
+There's no shortage of legal AI products on the market — many of them polished, well-funded, and easy to adopt. But they share a common limitation: your data runs through someone else's infrastructure, governed by someone else's terms. For routine work with low-sensitivity data, that tradeoff may be acceptable. For firms handling privileged litigation, regulatory investigations, or M&A due diligence, it often isn't.
+
+Self-hosting gives you something no SaaS vendor can: the ability to verify every claim about data handling by inspecting the infrastructure yourself. Here's what that looks like in practice — and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, delivers it:
 
 - **Your data never leaves your network.** Open WebUI runs entirely on your infrastructure — on-premise, private cloud, or air-gapped. By self-hosting open-source models, there is no third-party data exposure. No training risk. No external API calls.
 
-- **AI responses cite their sources.** Attorneys can query the firm's own documents — briefs, precedents, statutes, internal memos — and get responses with inline citations and relevance scores. This is powered by document-grounded retrieval (RAG), which doesn't eliminate hallucination but provides the traceability that verification requires.
+- **AI responses cite their sources.** Attorneys can query the firm's own documents — briefs, precedents, statutes, internal memos — and get responses with inline citations and relevance scores. This doesn't eliminate hallucination, but it can provide the traceability that verification requires.
 
 - **Access control mirrors your org structure.** Role-based permissions map to practice groups. Administrators can be prevented from viewing privileged conversations. Model access, document access, and feature access are all controlled per group.
 
@@ -67,7 +69,7 @@ Groups synchronize with your identity provider (Okta, Azure AD, Google Workspace
 
 ## What a Production Deployment Looks Like
 
-*This section is a reference for your IT or engineering team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it runs entirely on your infrastructure, scales with your firm, and requires no external dependencies.*
+*This section is a reference for your IT or engineering team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it runs entirely on your existing infrastructure (VMware, Azure, AWS, or bare metal), scales with your firm, and requires no external dependencies.*
 
 For large firms (200–1,000+ attorneys), a production deployment needs high availability, data isolation, and compliance-ready infrastructure. Here's the reference architecture — for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
@@ -118,9 +120,7 @@ flowchart TB
 
 ## Get Started
 
-Open WebUI is **free to use** with no restrictions, hidden limits, or feature gating. Infrastructure costs depend on your firm's scale — a single practice group pilot can run on one GPU server, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full production rollout takes a few weeks. Your IT team can scope both using the **[Technical Setup Guide](setup.md)**.
-
-### For Your Engineering Team
+Open WebUI is **free to use**. Infrastructure costs depend on your firm's scale — a single practice group pilot can run on one GPU server in your existing cloud environment or on-premise, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full production rollout takes a few weeks.
 
 The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
 

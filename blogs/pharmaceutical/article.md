@@ -9,9 +9,11 @@
 
 ## The Problem
 
-Drug development takes 10–15 years and costs over $2 billion on average. At every stage — target identification, lead optimization, clinical trial design, regulatory submission — scientists generate and interpret massive volumes of proprietary data. The pressure to use AI on that data is immense. The risk of doing it carelessly is existential.
+In 2023, Samsung banned employees from using ChatGPT after engineers inadvertently uploaded proprietary source code and internal meeting notes to the service — data that could be stored on external servers and potentially used for model training. Samsung wasn't a pharma company, but the lesson landed hard across the industry: if it can happen with source code, it can happen with compound structures, clinical trial data, and manufacturing processes.
 
-Three specific challenges are slowing AI adoption across the pharmaceutical industry:
+The pharma industry took notice — and the numbers confirm why. A 2024 Kiteworks study found that **83% of pharmaceutical companies operate without automated safeguards** to prevent sensitive data from leaking through AI tools. Only 17% have implemented technical controls like DLP scanning. The rest rely on training emails (40%), warnings without follow-up (20%), or have no AI usage policy at all (13%). Meanwhile, 27% of life sciences organizations report that over 30% of their AI-handled data contains sensitive or proprietary content.
+
+Three specific challenges are slowing AI adoption:
 
 **The data you most want AI to analyze is the data you can least afford to expose.** Pre-IND compound structures, unpublished mechanism-of-action data, clinical endpoint designs, manufacturing process parameters — this is the intellectual property that underpins your pipeline. Sending it to a cloud LLM means relinquishing physical control. Even with contractual protections, once data hits a third-party API, you cannot guarantee how it's stored, cached, or used for model improvement. For organizations where a single patent filing depends on maintaining trade secret protection, that's not a manageable risk — it's a disqualifying one.
 

@@ -1,19 +1,89 @@
-# Legal Industry — Technical Companion Guide
+# Legal Industry — Technical Setup Guide
 
-This guide accompanies the [Deploying Private AI for the Legal Industry with Open WebUI](BLOG.md) blog post. It provides everything your engineering or IT team needs to stand up the production architecture described there.
+This guide is the engineering companion to [Private AI for the Legal Industry with Open WebUI](article.md). It provides everything your engineering or IT team needs to deploy, configure, and operate the production architecture described there.
 
 ---
 
 ## Table of Contents
 
-1. [Pre-Requisites](#pre-requisites)
-2. [Docker Compose Reference](#docker-compose-reference)
-3. [Setup Script](#setup-script)
-4. [Environment Variable Reference](#environment-variable-reference)
-5. [RBAC Configuration Guide](#rbac-configuration-guide)
-6. [Knowledge Base Setup Guide](#knowledge-base-setup-guide)
-7. [Security Hardening Checklist](#security-hardening-checklist)
-8. [Backup & Disaster Recovery](#backup--disaster-recovery)
+1. [Architecture Deep Dive](#architecture-deep-dive)
+2. [Pre-Requisites](#pre-requisites)
+3. [Docker Compose Reference](#docker-compose-reference)
+4. [Setup Script](#setup-script)
+5. [Environment Variable Reference](#environment-variable-reference)
+6. [RBAC Configuration Guide](#rbac-configuration-guide)
+7. [Knowledge Base Setup Guide](#knowledge-base-setup-guide)
+8. [Security Hardening Checklist](#security-hardening-checklist)
+9. [Backup & Disaster Recovery](#backup--disaster-recovery)
+
+---
+
+## Architecture Deep Dive
+
+This section explains each component in the production stack and why it exists. For the high-level overview and business rationale, see the [blog post](article.md).
+
+### Reverse Proxy + TLS Termination
+
+All traffic enters through a single reverse proxy that enforces TLS encryption in transit. This is your network boundary — nothing reaches Open WebUI without passing through it. For firms with existing network infrastructure, this integrates with your current certificate management and firewall rules. The proxy also handles load balancing across Open WebUI instances, distributing requests evenly to prevent any single node from becoming a bottleneck.
+
+### Stateless Open WebUI Nodes
+
+Open WebUI instances run as stateless containers. This means you can:
+
+- Scale horizontally — add nodes during peak usage (e.g., trial preparation) and remove them during quieter times
+- Lose any single node without service interruption
+- Restart containers without losing data — all persistent state lives in PostgreSQL and Redis
+
+Key environment variables for this deployment pattern:
+
+- `ENABLE_ADMIN_CHAT_ACCESS=False` — Protects attorney-client privilege from internal IT access
+- `ENABLE_SIGNUP=False` — No self-registration; user provisioning is controlled
+- `DEFAULT_USER_ROLE=pending` — New accounts require admin approval before accessing any AI capabilities
+- `ENABLE_ADMIN_EXPORT=False` — Prevents bulk data extraction
+
+### PostgreSQL + PGVector
+
+PostgreSQL serves dual duty: it stores chat history, user records, and configuration (the audit trail), and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
+
+For legal teams, the audit trail matters most. Every conversation is persisted, timestamped, and associated with a user identity. Combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, this creates a record that satisfies regulatory and internal governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
+
+### Redis
+
+Redis handles session management and WebSocket coordination across stateless nodes. When an attorney starts a conversation on one Open WebUI instance and their next request routes to a separate instance, Redis ensures the session is seamless. Without it, multi-node deployments cannot function. Redis Sentinel or Cluster mode is recommended for production HA.
+
+### Shared Document Storage
+
+Uploaded documents — case files, briefs, internal memos, policy documents — need to be accessible from any Open WebUI instance. An S3-compatible object store (MinIO for on-prem, or your cloud provider's offering) or NFS mount provides this shared layer. Open WebUI's file management dashboard provides a centralized interface to search, view, and manage them.
+
+### Ollama — Local Model Inference
+
+Ollama runs models directly on your infrastructure. This is the core of the data sovereignty promise: prompts, completions, and any intermediate representations never leave your network. Ollama supports GPU passthrough via NVIDIA Container Toolkit, and Open WebUI can load-balance across multiple Ollama instances for concurrent users.
+
+### vLLM — GPU-Optimized Inference
+
+For firms needing maximum throughput from large models (70B+ parameters), vLLM provides optimized GPU inference with continuous batching and PagedAttention. It exposes an OpenAI-compatible API, so Open WebUI connects to it just like any other API endpoint.
+
+vLLM is the right choice when:
+
+- Dozens of attorneys are running concurrent queries
+- You're serving 70B+ parameter models that need tensor parallelism across multiple GPUs
+- You need deterministic throughput guarantees for SLA-sensitive workflows
+
+Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to serve smaller models for quick tasks (summarization, Q&A), while using vLLM to handle the large reasoning models for complex legal analysis.
+
+### Functions (Optional)
+
+Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/functions/) plugin system enables custom processing logic without external services. Legal-relevant functions include:
+
+- **Rate limiting**: Prevent runaway local LLM usage during bulk document processing
+- **Toxic message filtering**: Content safety guardrails
+- **LLM-Guard prompt injection scanning**: Protect against adversarial inputs that might attempt to extract privileged information
+- **Langfuse monitoring**: Detailed usage analytics per user, model, and practice group
+- **Custom RAG functions**: Firm-specific retrieval logic, e.g., prioritizing recent case law or jurisdiction-specific statutes
+
+### OpenTelemetry (Optional)
+
+Built-in OpenTelemetry support exports traces, metrics, and logs to your existing observability stack (Prometheus, Grafana, Jaeger, Splunk, Datadog). For firms subject to audit, this provides infrastructure-level evidence that AI systems are operating within policy.
 
 ---
 
@@ -165,11 +235,14 @@ services:
     networks:
       - owui-net
 
+  # Note: open-webui-2 duplicates the environment from open-webui-1 because
+  # Docker Compose list-style environment blocks do not support YAML merge keys.
+  # If you add or change a variable above, update it here as well.
   open-webui-2:
-    <<: *owui-base
+    image: ghcr.io/open-webui/open-webui:main
     container_name: owui-node-2
+    restart: unless-stopped
     environment:
-      # Inherit all env vars from owui-base, override migrations
       - WEBUI_URL=${WEBUI_URL}
       - WEBUI_NAME=${WEBUI_NAME:-Legal AI}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
@@ -206,6 +279,21 @@ services:
       - ENABLE_OTEL=${ENABLE_OTEL:-False}
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT:-}
       - ENABLE_PERSISTENT_CONFIG=True
+    volumes:
+      - owui-data:/app/backend/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - owui-net
 
   # ---------------------------------------------------------------------------
   # PostgreSQL 16 + PGVector — Database and vector store
@@ -763,7 +851,7 @@ Use this checklist before going to production. Each item maps to a specific lega
 - [ ] Hugging Face token is stored only in `.env`, not committed to version control
 - [ ] `.env` file has restrictive permissions: `chmod 600 .env`
 - [ ] vLLM API key (`VLLM_API_KEY`) is set to prevent unauthorized direct access to the inference endpoint
-- [ ] If Pipelines are used: LLM-Guard or equivalent pipeline installed for prompt injection scanning
+- [ ] If Functions are used: LLM-Guard or equivalent function installed for prompt injection scanning
 
 ### Operational Security
 
@@ -814,9 +902,8 @@ docker compose exec -T postgres pg_dump \
     --compress=9 \
     > "${BACKUP_FILE}"
 
-# Verify backup integrity
-docker compose exec -T postgres pg_restore \
-    --list "${BACKUP_FILE}" > /dev/null 2>&1 \
+# Verify backup integrity (pg_restore runs on the host against the host-side file)
+pg_restore --list "${BACKUP_FILE}" > /dev/null 2>&1 \
     && echo "[OK] Backup verified: ${BACKUP_FILE}" \
     || echo "[ERROR] Backup verification failed: ${BACKUP_FILE}"
 
@@ -846,4 +933,4 @@ For mission-critical deployments, enable PostgreSQL WAL archiving for point-in-t
 
 ---
 
-*This companion guide is maintained alongside the [Open WebUI for the Legal Industry](BLOG.md) blog post. For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*
+*This guide is maintained alongside the [Private AI for the Legal Industry with Open WebUI](article.md) blog post. For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*

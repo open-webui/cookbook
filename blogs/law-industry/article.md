@@ -2,6 +2,9 @@
 
 *For managing partners, CIOs, and legal technology leaders evaluating AI solutions for their firm.*
 
+<!-- TODO: Replace with hero image for social sharing previews -->
+![Private AI for Law Firms](images/hero.png)
+
 ---
 
 ## The Problem
@@ -38,11 +41,17 @@ When configured with a firm's internal document library, an associate preparing 
 
 For a partner reviewing the associate's work, the audit trail shows exactly which AI-generated content was used, what sources it was grounded in, and when. This is the traceability that bar ethics opinions are demanding.
 
+<!-- TODO: Replace with real screenshot of chat UI showing inline citations and source panel -->
+![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
+
 ---
 
 ## Access Control for Practice Groups
 
 Open WebUI's group system maps naturally to law firm organizational structures. Each practice group gets tailored permissions:
+
+<!-- TODO: Replace with screenshot of Admin Panel → Groups showing practice groups -->
+![Admin panel showing practice group configuration](images/admin_groups.png)
 
 | Practice Group | AI Capabilities | Knowledge Bases | Special Permissions |
 |---|---|---|---|

@@ -710,6 +710,9 @@ After first deployment, configure practice groups via the Admin Panel. This sect
 
 Navigate to **Admin Panel → Settings → OAuth** and configure your identity provider:
 
+<!-- TODO: Replace with screenshot of Admin Panel → Settings → OAuth page -->
+![OAuth configuration settings](images/oauth_settings.png)
+
 ```
 OPENID_PROVIDER_URL=https://login.yourfirm.com/.well-known/openid-configuration
 OAUTH_CLIENT_ID=<your-client-id>
@@ -726,6 +729,9 @@ ENABLE_OAUTH_ROLE_MANAGEMENT=True
 ### Step 2: Create Practice Groups
 
 Navigate to **Admin Panel → Groups** and create groups matching your firm's structure:
+
+<!-- TODO: Replace with screenshot of Admin Panel → Groups page -->
+![Groups management page](images/groups_creation.png)
 
 1. **Litigation**
    - Models: All available models
@@ -756,6 +762,9 @@ Navigate to **Admin Panel → Groups** and create groups matching your firm's st
 
 For each model in **Admin Panel → Models**:
 
+<!-- TODO: Replace with screenshot of model edit page showing access control -->
+![Model access control settings](images/model_access.png)
+
 1. Set visibility to **Private** (not Public)
 2. Under **Access Control**, add the groups that should have access
 3. Ensure `BYPASS_MODEL_ACCESS_CONTROL=False` in your environment so these restrictions are enforced
@@ -763,6 +772,9 @@ For each model in **Admin Panel → Models**:
 ### Step 4: Assign Knowledge Bases to Groups
 
 For each knowledge base in **Admin Panel → Knowledge**:
+
+<!-- TODO: Replace with screenshot of knowledge base access control -->
+![Knowledge base access control](images/knowledge_access.png)
 
 1. Set access control to the relevant practice groups
 2. Users will only see knowledge bases assigned to their group(s) in the chat interface
@@ -788,6 +800,9 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 ### Upload Workflow
 
 1. Navigate to **Workspace → Knowledge → Create Knowledge Base**
+
+<!-- TODO: Replace with screenshot of knowledge base creation and upload workflow -->
+![Knowledge base upload workflow](images/kb_upload.png)
 2. Name the knowledge base and set the access control to the relevant practice group(s)
 3. Upload documents (supported formats: PDF, DOCX, TXT, Markdown, HTML, CSV, XLSX, PPTX)
 4. Open WebUI automatically:

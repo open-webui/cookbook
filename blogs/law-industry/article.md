@@ -1,6 +1,6 @@
 # Private AI for the Legal Industry
 
-*For managing partners, CIOs, and legal technology leaders evaluating private AI deployment.*
+*For managing partners, CIOs, and legal technology leaders evaluating AI solutions for their firm.*
 
 ---
 
@@ -26,7 +26,7 @@ Any AI platform worth deploying in a law firm needs to address all three problem
 
 - **Your data never leaves your network.** Open WebUI runs entirely on your infrastructure — on-premise, private cloud, or air-gapped. By self-hosting open-source models, there is no third-party data exposure. No training risk. No external API calls.
 
-- **AI responses cite their sources.** Retrieval-Augmented Generation (RAG) lets attorneys query the firm's own documents — briefs, precedents, statutes, internal memos — with inline citations and relevance scores. This doesn't eliminate hallucination, but it provides the traceability that verification requires.
+- **AI responses cite their sources.** Attorneys can query the firm's own documents — briefs, precedents, statutes, internal memos — and get responses with inline citations and relevance scores. This is powered by document-grounded retrieval (RAG), which doesn't eliminate hallucination but provides the traceability that verification requires.
 
 - **Access control mirrors your org structure.** Role-based permissions map to practice groups. Administrators can be prevented from viewing privileged conversations. Model access, document access, and feature access are all controlled per group.
 
@@ -34,7 +34,7 @@ Any AI platform worth deploying in a law firm needs to address all three problem
 
 ### What This Looks Like in Practice
 
-An associate preparing a motion types their question into Open WebUI. The response draws from the firm's internal brief library and cites the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The full conversation is logged under their user account, searchable and auditable. No data leaves the firm's servers at any point.
+When configured with a firm's internal document library, an associate preparing a motion types their question into Open WebUI. The response draws from the firm's briefs and cites the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The full conversation is logged under their user account, searchable and auditable. No data leaves the firm's servers at any point.
 
 For a partner reviewing the associate's work, the audit trail shows exactly which AI-generated content was used, what sources it was grounded in, and when. This is the traceability that bar ethics opinions are demanding.
 
@@ -44,13 +44,13 @@ For a partner reviewing the associate's work, the audit trail shows exactly whic
 
 Open WebUI's group system maps naturally to law firm organizational structures. Each practice group gets tailored permissions:
 
-| Practice Group | Models Accessible | Knowledge Bases | Special Permissions |
+| Practice Group | AI Capabilities | Knowledge Bases | Special Permissions |
 |---|---|---|---|
-| **Litigation** | Full model suite | Case law, motions, discovery templates | Web search enabled |
-| **Corporate / M&A** | Full model suite | Deal templates, regulatory filings, due diligence checklists | Document extraction *(extract structured data from contracts and filings)* |
-| **Intellectual Property** | Full model suite | Patent databases, prosecution templates | Code interpreter *(run analysis scripts on patent claim data)* |
-| **Tax** | Reasoning models only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses limited to firm documents, no general knowledge)* |
-| **Paralegals / Staff** | Small models only | Firm procedures, HR policies | No file upload, no web search |
+| **Litigation** | Full | Case law, motions, discovery templates | Web search enabled |
+| **Corporate / M&A** | Full | Deal templates, regulatory filings, due diligence checklists | Document extraction *(extract structured data from contracts and filings)* |
+| **Intellectual Property** | Full | Patent databases, prosecution templates | Code interpreter *(run analysis scripts on patent claim data)* |
+| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses limited to firm documents, no general knowledge)* |
+| **Paralegals / Staff** | Basic tasks only | Firm procedures, HR policies | No file upload, no web search |
 
 Groups synchronize with your identity provider (Okta, Azure AD, Google Workspace) via OAuth, so practice group membership stays in sync with your firm's directory automatically.
 
@@ -58,7 +58,7 @@ Groups synchronize with your identity provider (Okta, Azure AD, Google Workspace
 
 ## What a Production Deployment Looks Like
 
-*The section below is a reference for your IT or engineering team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: this runs entirely on your infrastructure, scales with your firm, and requires no external dependencies.*
+*This section is a reference for your IT or engineering team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it runs entirely on your infrastructure, scales with your firm, and requires no external dependencies.*
 
 For large firms (200–1,000+ attorneys), a production deployment needs high availability, data isolation, and compliance-ready infrastructure. Here's the reference architecture — for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
@@ -100,26 +100,26 @@ flowchart TB
 ```
 
 **Key design decisions:**
-- **Stateless application nodes** scale horizontally — add capacity during trial preparation, scale down during quieter periods
-- **All models run locally** via Ollama (small/fast models) and vLLM (large reasoning models) — prompts never leave your network
-- **PostgreSQL handles both data and vectors** — one database to back up, monitor, and secure
-- **Redis coordinates sessions** across nodes so attorneys get seamless experiences regardless of which node handles their request
+- **Stateless application nodes** — horizontal scaling allows capacity to flex with demand across the firm
+- **All inference runs locally** — via Ollama (lightweight models) and vLLM (large models with GPU optimization); no prompts leave the network
+- **Unified data layer** — PostgreSQL handles both application data and vector search, reducing operational complexity
+- **Redis session coordination** — enables multi-node deployments where any instance can serve any request seamlessly
 
 ---
 
 ## Get Started
 
-Open WebUI is **free to use** with no restrictions, hidden limits, or feature gating. The software itself requires no license. Infrastructure costs depend on your firm's scale — a single practice group pilot can run on one GPU server, while the full production architecture above involves dedicated compute and storage. Your IT team can scope the investment using the **[Technical Setup Guide](setup.md)**.
+Open WebUI is **free to use** with no restrictions, hidden limits, or feature gating. Infrastructure costs depend on your firm's scale — a single practice group pilot can run on one GPU server, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full production rollout takes a few weeks. Your IT team can scope both using the **[Technical Setup Guide](setup.md)**.
 
 ### For Your Engineering Team
 
-The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide. It includes everything needed to stand up a production deployment:
+The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
 
 **[Legal Industry Technical Setup Guide →](setup.md)**
 
 ### Enterprise Support
 
-Everything above works without a license or paid plan. If your firm wants hands-on support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
+If your firm wants hands-on support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
 
 - **Security & compliance guidance** — SOC 2, HIPAA, GDPR, FedRAMP, and ISO 27001 alignment
 - **White-label branding** — Match the AI interface to your firm's identity

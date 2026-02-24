@@ -155,7 +155,7 @@ services:
   # ---------------------------------------------------------------------------
   # Open WebUI — Stateless application nodes
   # ---------------------------------------------------------------------------
-  open-webui-1: &owui-base
+  open-webui-1:
     image: ghcr.io/open-webui/open-webui:main
     container_name: owui-node-1
     restart: unless-stopped

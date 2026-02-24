@@ -1,14 +1,16 @@
-# Private AI for the Legal Industry with Open WebUI
+# Private AI for the Legal Industry
 
 ---
 
-## AI Adoption Challenges for the Legal Industry
+## The Problem
 
-In many industries, AI is reshaping how knowledge workers operate. For law firms, the productivity gains from AI appear tempting, but the stakes are uniquely unforgiving. Three challenges have slowed adoption across the industry:
+In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. The court sanctioned both the lawyer and his firm. Since then, multiple bar associations have issued ethics opinions requiring attorneys to verify AI-generated content — but verification without source traceability is difficult at scale.
 
-**AI model hallucinations are a liability.** In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. The court sanctioned both the lawyer and his firm. Since then, multiple bar associations have issued ethics opinions requiring attorneys to verify AI-generated content, but verification without source traceability is difficult at scale.
+That's just one of three challenges slowing AI adoption across the legal industry:
 
-**Client data in hosted models is a privilege risk.** Sending case materials to cloud AI providers raises concerns about waiver of attorney-client privilege under ABA Model Rule 1.6. While some ethics opinions (e.g., ABA Formal Opinion 477R) suggest cloud use can be permissible with adequate safeguards, many firms handling sensitive litigation, M&A, or regulatory matters prefer to eliminate third-party data exposure entirely rather than rely on contractual assurances they cannot independently verify.
+**Hallucinations are a liability.** AI-generated content that cites nonexistent cases or misrepresents holdings exposes firms to sanctions, malpractice claims, and reputational damage. Attorneys need traceability — the ability to verify every claim against a source document.
+
+**Client data in hosted models is a privilege risk.** Sending case materials to cloud AI providers raises concerns about waiver of attorney-client privilege under ABA Model Rule 1.6. While some ethics opinions (e.g., ABA Formal Opinion 477R) suggest cloud use can be permissible with adequate safeguards, many firms handling sensitive litigation, M&A, or regulatory matters prefer to eliminate third-party data exposure entirely.
 
 **Compliance requirements are multiplying.** State bar AI disclosure rules, GDPR for international practices, and internal governance obligations all demand auditable, controllable AI infrastructure — not a SaaS subscription with opaque data handling.
 
@@ -16,9 +18,9 @@ These challenges share a common root: firms need AI they can *control*, *observe
 
 ---
 
-## How Open WebUI Solves These Problems
+## What a Legal AI Platform Needs
 
-[Open WebUI](https://docs.openwebui.com/) is a self-hosted AI platform designed to give law firms full control over their AI infrastructure. Here's what that means in practice:
+Any AI platform worth deploying in a law firm needs to address all three problems above. Here's what that looks like in practice — and how [Open WebUI](https://docs.openwebui.com/), an open-source, self-hosted AI platform, delivers each one:
 
 - **Your data never leaves your network.** Open WebUI runs entirely on your infrastructure — on-premise, private cloud, or air-gapped. By self-hosting open-source models, there is no third-party data exposure. No training risk. No external API calls.
 
@@ -42,7 +44,7 @@ The complete Docker Compose stack, security hardening checklist, RBAC configurat
 
 ### Enterprise Support
 
-Everything above works without a license — Open WebUI is fully open source and always will be. If your firm wants hands-on support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
+Everything above works without a license or paid plan. If your firm wants hands-on support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
 
 - **Security & compliance guidance** — SOC 2, HIPAA, GDPR, FedRAMP, and ISO 27001 alignment
 - **White-label branding** — Match the AI interface to your firm's identity
@@ -54,9 +56,9 @@ Your data, your infrastructure, your choice of models — with or without us.
 
 ---
 
-## Architecture at a Glance
+## What a Production Deployment Looks Like
 
-The architecture below is designed for large law firms (200–1,000+ attorneys) requiring high availability, data isolation, and compliance-ready infrastructure. For the full component breakdown, environment variable reference, and deployment instructions, see the **[Technical Setup Guide](setup.md)**.
+For large firms (200–1,000+ attorneys), a production deployment needs high availability, data isolation, and compliance-ready infrastructure. Here's the reference architecture — for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
 ```mermaid
 flowchart TB
@@ -84,7 +86,7 @@ flowchart TB
     end
 
     subgraph optional["Optional Services"]
-        pipelines["Functions<br/>(Built-in Plugins)"]
+        functions["Functions<br/>(Built-in Plugins)"]
         otel["OpenTelemetry<br/>Collector"]
     end
 
@@ -121,4 +123,4 @@ For step-by-step RBAC configuration instructions, see the **[Technical Setup Gui
 
 ---
 
-*Open WebUI is one of the fastest-growing open-source AI platforms, powering deployments across enterprise, research, and government. [Learn more →](https://docs.openwebui.com/enterprise/customers)*
+*Open WebUI is free to use and self-hostable. It powers AI deployments at organizations ranging from small teams to Fortune 500 companies. [See who's using Open WebUI →](https://docs.openwebui.com/enterprise/customers/)*

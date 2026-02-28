@@ -9,13 +9,13 @@
 
 ## The Problem
 
-In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. The court sanctioned both the lawyer and his firm. Since then, multiple bar associations have issued ethics opinions requiring attorneys to verify AI-generated content — but verification without source traceability is difficult at scale.
+In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. [The court sanctioned both the lawyer and his firm.](https://www.courtlistener.com/docket/63107798/54/mata-v-avianca-inc/) Since then, multiple bar associations have issued ethics opinions requiring attorneys to verify AI-generated content — but verification without source traceability is difficult at scale.
 
 That's just one of three challenges slowing AI adoption across the legal industry:
 
 **Hallucinations are a liability.** AI-generated content that cites nonexistent cases or misrepresents holdings exposes firms to sanctions, malpractice claims, and reputational damage. Attorneys need traceability — the ability to verify every claim against a source document.
 
-**Client data in hosted models is a privilege risk.** Sending case materials to cloud AI providers raises concerns about waiver of attorney-client privilege under ABA Model Rule 1.6. While some ethics opinions (e.g., ABA Formal Opinion 477R) suggest cloud use can be permissible with adequate safeguards, many firms handling sensitive litigation, M&A, or regulatory matters prefer to eliminate third-party data exposure entirely.
+**Client data in hosted models is a privilege risk.** Sending case materials to cloud AI providers raises concerns about waiver of attorney-client privilege under [ABA Model Rule 1.6](https://www.americanbar.org/news/abanews/aba-news-archives/2024/07/aba-issues-first-ethics-guidance-ai-tools/). While some ethics opinions (e.g., [ABA Formal Opinion 477R](https://docs.tbpr.org/pub/aba%20formal%20opinion%20477.authcheckdam.pdf)) suggest cloud use can be permissible with adequate safeguards, many firms handling sensitive litigation, M&A, or regulatory matters prefer to eliminate third-party data exposure entirely.
 
 **Compliance requirements are multiplying.** State bar AI disclosure rules, GDPR for international practices, and internal governance obligations all demand auditable, controllable AI infrastructure — not a SaaS subscription with opaque data handling.
 

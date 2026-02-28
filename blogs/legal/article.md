@@ -52,7 +52,6 @@ For a partner reviewing the associate's work, the audit trail shows exactly whic
 
 Open WebUI's group system maps naturally to law firm organizational structures. Each practice group gets tailored permissions:
 
-<!-- TODO: Replace with screenshot of Admin Panel → Groups showing practice groups -->
 ![Admin panel showing practice group configuration](images/admin_groups.png)
 
 | Practice Group | AI Capabilities | Knowledge Bases | Special Permissions |

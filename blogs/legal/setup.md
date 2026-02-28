@@ -708,10 +708,7 @@ After first deployment, configure practice groups via the Admin Panel. This sect
 
 ### Step 1: Configure OAuth / SSO
 
-Navigate to **Admin Panel → Settings → OAuth** and configure your identity provider:
-
-<!-- TODO: Replace with screenshot of Admin Panel → Settings → OAuth page -->
-![OAuth configuration settings](images/oauth_settings.png)
+SSO is configured entirely through environment variables — there is no admin panel UI for it. Add the following to your `.env` file or Docker Compose environment block and restart the container:
 
 ```
 OPENID_PROVIDER_URL=https://login.yourfirm.com/.well-known/openid-configuration
@@ -719,12 +716,15 @@ OAUTH_CLIENT_ID=<your-client-id>
 OAUTH_CLIENT_SECRET=<your-client-secret>
 OAUTH_SCOPES=openid email profile groups
 OAUTH_GROUP_CLAIM=groups
+ENABLE_OAUTH_SIGNUP=True
 ENABLE_OAUTH_GROUP_MANAGEMENT=True
 ENABLE_OAUTH_GROUP_CREATION=True
 ENABLE_OAUTH_ROLE_MANAGEMENT=True
 ```
 
 > **Tip:** Set `ENABLE_OAUTH_GROUP_MANAGEMENT=True` so that practice group membership syncs automatically from your identity provider. When an attorney moves from Litigation to Corporate in your directory, their Open WebUI permissions update on next login.
+>
+> For troubleshooting, see the [Open WebUI SSO documentation](https://docs.openwebui.com/troubleshooting/sso/).
 
 ### Step 2: Create Practice Groups
 

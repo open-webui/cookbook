@@ -43,7 +43,6 @@ When configured with a firm's internal document library, an associate preparing 
 
 For a partner reviewing the associate's work, the audit trail shows exactly which AI-generated content was used, what sources it was grounded in, and when. This is the traceability that bar ethics opinions are demanding.
 
-<!-- TODO: Replace with real screenshot of chat UI showing inline citations and source panel -->
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
 
 ---

@@ -769,7 +769,7 @@ For each model in **Admin Panel → Models**:
 
 ### Step 4: Assign Knowledge Bases to Groups
 
-For each knowledge base in **Admin Panel → Knowledge**:
+For each knowledge base in **Workspace → Knowledge**:
 
 ![Knowledge base access control](images/knowledge_access.png)
 

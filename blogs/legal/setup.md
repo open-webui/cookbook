@@ -798,7 +798,6 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 
 1. Navigate to **Workspace → Knowledge → Create Knowledge Base**
 
-<!-- TODO: Replace with screenshot of knowledge base creation and upload workflow -->
 ![Knowledge base upload workflow](images/kb_upload.png)
 2. Name the knowledge base and set the access control to the relevant practice group(s)
 3. Upload documents (supported formats: PDF, DOCX, TXT, Markdown, HTML, CSV, XLSX, PPTX)

@@ -730,7 +730,6 @@ ENABLE_OAUTH_ROLE_MANAGEMENT=True
 
 Navigate to **Admin Panel → Groups** and create groups matching your firm's structure:
 
-<!-- TODO: Replace with screenshot of Admin Panel → Groups page -->
 ![Groups management page](images/groups_creation.png)
 
 1. **Litigation**

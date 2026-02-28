@@ -752,7 +752,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your firm's st
    - Knowledge bases: Tax code, IRS guidance, firm tax opinions
    - Permissions: RAG-only mode (no web search, no file upload)
 
-5. **Paralegals / Support Staff**
+5. **Paralegals**
    - Models: Small models only (e.g., Llama 3.1 8B, Mistral 7B via Ollama)
    - Knowledge bases: Firm procedures, HR policies
    - Permissions: No file upload, no web search
@@ -761,7 +761,6 @@ Navigate to **Admin Panel → Groups** and create groups matching your firm's st
 
 For each model in **Admin Panel → Models**:
 
-<!-- TODO: Replace with screenshot of model edit page showing access control -->
 ![Model access control settings](images/model_access.png)
 
 1. Set visibility to **Private** (not Public)

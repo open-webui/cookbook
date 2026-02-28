@@ -771,7 +771,6 @@ For each model in **Admin Panel → Models**:
 
 For each knowledge base in **Admin Panel → Knowledge**:
 
-<!-- TODO: Replace with screenshot of knowledge base access control -->
 ![Knowledge base access control](images/knowledge_access.png)
 
 1. Set access control to the relevant practice groups

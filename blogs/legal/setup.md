@@ -664,7 +664,7 @@ The Docker Compose file above includes the most important variables for this dep
 | `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | Disables sharing prompts/models to the Open WebUI Community hub. |
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables chat deletion at the application level, preserving the full conversation record. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables chat deletion at the application level. |
 | `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary (unlogged) chats. |
 
 ### RAG Configuration
@@ -780,7 +780,7 @@ For each knowledge base in **Workspace → Knowledge**:
 
 ## Knowledge Base Setup Guide
 
-Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section walks through configuring knowledge bases for a legal practice.
+Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section walks through configuring knowledge bases for this deployment pattern.
 
 ### Recommended Knowledge Base Structure
 
@@ -807,7 +807,7 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
    - Generates vector embeddings and stores them in PGVector
 5. Users in the assigned groups can now reference this knowledge base in chat by typing `#` followed by the knowledge base name
 
-### RAG Best Practices for Legal Documents
+### RAG Best Practices
 
 - **Chunk size**: The default works well for most legal documents. For very long contracts, consider uploading individual sections as separate documents for more precise retrieval.
 - **Citation verification**: RAG provides relevance scores with each retrieved chunk. Attorneys must always verify citations against the source document - RAG reduces hallucination but does not eliminate it. **All AI-generated content must be reviewed by qualified attorneys before reliance or use in any legal proceeding.**

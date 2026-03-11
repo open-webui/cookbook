@@ -600,7 +600,7 @@ echo "==========================================================================
 
 These are the same Open WebUI environment variables used in any deployment. This section highlights the ones that organizations in regulated industries have found relevant. **These descriptions explain what each setting does - they do not constitute compliance guidance.** For the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
 
-### Audit Trail & Data Integrity
+### Data Retention & Visibility
 
 > **Note:** These descriptions explain the technical behavior of each setting. They do not constitute a compliance determination. Your organization's quality team must evaluate these controls as part of your own Computer System Validation (CSV) process.
 
@@ -658,7 +658,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 | **Authority checks** | §11.10(f) | RBAC restricts access to models, documents, and features by functional group. |
 | **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management support availability monitoring. |
 | **Personnel accountability** | §11.10(j) | SSO provides authenticated identity for every interaction. Shared accounts are not supported. |
-| **Open system controls** | §11.30 | Designed for deployment as a closed system on internal infrastructure. |
+| **Open system controls** | §11.30 | Can be deployed as a closed system on internal infrastructure. |
 
 ### EMA Annex 11 - Computerised Systems
 
@@ -677,7 +677,7 @@ If your organization uses a risk-based approach to CSV (Computer System Validati
 2. **Operational Qualification (OQ)** - Verify that RBAC rules restrict access as configured, audit trails capture all interactions, and SSO integration works correctly. The security hardening checklist below serves as a starting point for OQ test cases.
 3. **Performance Qualification (PQ)** - Verify the system performs its intended function in the production environment with real user workflows and document libraries.
 
-Open WebUI's open-source codebase, deterministic container deployment, and comprehensive configuration via environment variables make it well-suited for this validation approach.
+Open WebUI's open-source codebase, deterministic container deployment, and comprehensive configuration via environment variables can facilitate this validation approach.
 
 ---
 

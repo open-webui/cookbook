@@ -33,7 +33,7 @@ If a firm were to explore self-hosted AI, what capabilities would matter? Based 
 
 - **Data locality.** The ability to run AI entirely on firm-controlled infrastructure - on-premise, private cloud, or air-gapped. With the right configuration, this can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
 
-- **Source-grounded responses with citations.** The ability for attorneys to query the firm's briefs, precedents, statutes, and internal memos, and receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can significantly improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
+- **Source-grounded responses with citations.** The ability for attorneys to query the firm's briefs, precedents, statutes, and internal memos, and receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
 
 - **Group-based access control.** The ability to map role-based permissions to practice groups, restrict administrators from viewing certain conversations, and control model access, document access, and feature access per group.
 

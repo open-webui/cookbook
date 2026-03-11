@@ -39,7 +39,7 @@ Self-hosting changes the equation. Instead of trusting vendor claims about data 
 
 - **Configurable access control.** The ability to map permissions to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group seeing only the models, documents, and capabilities assigned to it. IT administrators able to manage the platform without viewing the content of user conversations.
 
-- **Configurable audit and retention controls.** The ability to timestamp and attribute every conversation to an authenticated user, retain conversations according to your policy, and disable chat deletion and temporary chats at the application level. Combined with SSO integration, these controls can be evaluated for electronic record-keeping requirements.
+- **Configurable audit and retention controls.** The ability to timestamp and attribute conversations to an authenticated user, retain conversations according to your policy, and disable chat deletion and temporary chats at the application level. Combined with SSO integration, these controls can be evaluated for electronic record-keeping requirements.
 
 These aren't unique to any one product - they're the criteria that organizations exploring self-hosted AI tend to evaluate against.
 

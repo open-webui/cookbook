@@ -1,6 +1,6 @@
 # Technical Setup Guide
 
-This guide is a technical reference companion to [What Would It Take for a Law Firm to Run AI In-House?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your firm's engineering, security, and compliance teams should adapt this architecture to your specific requirements.**
+This guide is a technical reference companion to [What Would It Take for a Law Firm to Run AI In-House?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries may find relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your firm's engineering, security, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -36,7 +36,7 @@ Open WebUI instances run as stateless containers. This means you can:
 
 Some configuration settings are particularly relevant in environments where data sensitivity and access control matter. Here are examples worth considering:
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content. *(Firms evaluating this for privilege protection should consult ethics counsel on their specific obligations.)*
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content at the application level. *(Firms evaluating this for privilege protection should consult ethics counsel on their specific obligations.)*
 - `ENABLE_SIGNUP=False` - No self-registration; user provisioning is controlled
 - `DEFAULT_USER_ROLE=pending` - New accounts require admin approval before accessing any AI capabilities
 - `ENABLE_ADMIN_EXPORT=False` - Disables bulk data extraction at the application level
@@ -45,11 +45,11 @@ Some configuration settings are particularly relevant in environments where data
 
 PostgreSQL serves dual duty: it stores chat history, user records, and configuration, and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
 
-Every conversation is persisted, timestamped, and associated with a user identity. When combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, this creates a record that organizations can evaluate against their own governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
+Conversations are persisted, timestamped, and associated with a user identity. When combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, chat deletion is disabled at the application level, which organizations can evaluate against their own governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
 
 ### Redis
 
-Redis handles session management and WebSocket coordination across stateless nodes. When an attorney starts a conversation on one Open WebUI instance and their next request routes to a separate instance, Redis ensures the session is seamless. Without it, multi-node deployments cannot function. Redis Sentinel or Cluster mode is recommended for production HA.
+Redis handles session management and WebSocket coordination across stateless nodes. When an attorney starts a conversation on one Open WebUI instance and their next request routes to a separate instance, Redis supports session continuity. Without it, multi-node deployments cannot function. Redis Sentinel or Cluster mode is recommended for production HA.
 
 ### Shared Document Storage
 
@@ -57,7 +57,7 @@ Uploaded documents - case files, briefs, internal memos, policy documents - need
 
 ### Ollama - Local Model Inference
 
-Ollama runs models directly on your infrastructure. When configured for local-only inference, prompts, completions, and any intermediate representations stay on your network. Ollama supports GPU passthrough via NVIDIA Container Toolkit, and Open WebUI can load-balance across multiple Ollama instances for concurrent users.
+Ollama runs models directly on your infrastructure. When configured for local-only inference, prompts and completions stay on your network. Ollama supports GPU passthrough via NVIDIA Container Toolkit, and Open WebUI can load-balance across multiple Ollama instances for concurrent users.
 
 ### vLLM - GPU-Optimized Inference
 
@@ -69,7 +69,7 @@ vLLM is the right choice when:
 - You're serving 70B+ parameter models that need tensor parallelism across multiple GPUs
 - You need consistent throughput for SLA-sensitive workflows
 
-Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to serve smaller models for quick tasks (summarization, Q&A), while using vLLM to handle the large reasoning models for complex legal analysis.
+Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to serve smaller models for quick tasks (summarization, Q&A), while using vLLM to handle the large reasoning models for complex analysis tasks.
 
 ### Functions (Optional)
 
@@ -659,7 +659,7 @@ The Docker Compose file above includes the most important variables for this dep
 |---|---|---|
 | `ENABLE_SIGNUP` | `False` | Disables self-registration. All users are provisioned by an admin or synced via SSO. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users land in a "pending" state until an admin explicitly approves them. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content. *(Firms evaluating this for privilege-related purposes should consult ethics counsel.)* |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content at the application level. *(Firms evaluating this for privilege-related purposes should consult ethics counsel.)* |
 | `ENABLE_ADMIN_EXPORT` | `False` | Disables bulk database exports at the application level. |
 | `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |

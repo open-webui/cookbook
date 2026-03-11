@@ -1,6 +1,6 @@
 # Technical Setup Guide
 
-This guide is a technical reference companion to [What Would It Take for a Pharma Company to Run AI On Its Own Infrastructure?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
+This guide is a technical reference companion to [What Would It Take for a Pharma Company to Run AI On Its Own Infrastructure?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries may find relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -27,8 +27,8 @@ What makes this configuration different from a generic deployment isn't the infr
 
 **Example configuration decisions:**
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content. This helps protect proprietary compound data and pre-competitive research.
-- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates a persistent, timestamped electronic record of every AI interaction at the application level.
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content at the application level.
+- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Disables chat deletion and temporary chats at the application level, so AI interactions are persisted with timestamps.
 - `ENABLE_COMMUNITY_SHARING=False` - Disables sharing of data, prompts, or model configurations externally.
 - `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. This helps prevent cross-group data exposure.
 
@@ -598,7 +598,7 @@ echo "==========================================================================
 
 ## Environment Variable Reference
 
-These are the same Open WebUI environment variables used in any deployment. This section highlights the ones that organizations in regulated industries have found relevant. **These descriptions explain what each setting does - they do not constitute compliance guidance.** For the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
+These are the same Open WebUI environment variables used in any deployment. This section highlights the ones that organizations in regulated industries may find relevant. **These descriptions explain what each setting does - they do not constitute compliance guidance.** For the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
 
 ### Data Retention & Visibility
 
@@ -607,8 +607,8 @@ These are the same Open WebUI environment variables used in any deployment. This
 | Variable | Value | What This Setting Does |
 |---|---|---|
 | `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables deletion of conversation records at the application level. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary chats, so every AI interaction is recorded. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary chats, so AI interactions are recorded. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content at the application level. |
 | `ENABLE_ADMIN_EXPORT` | `False` | Disables bulk extraction of conversation records at the application level. |
 
 ### Access Control
@@ -627,7 +627,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 |---|---|---|
 | `VECTOR_DB` | `pgvector` | Uses PostgreSQL's PGVector extension - one database for both application data and vector search. |
 | `RAG_TOP_K` | `5` | Returns the top 5 most relevant document chunks. Tune based on document density. |
-| `ENABLE_RAG_HYBRID_SEARCH` | `True` | BM25 + vector ensemble search with reranking. Critical for scientific documents where exact terminology matters alongside semantic similarity. |
+| `ENABLE_RAG_HYBRID_SEARCH` | `True` | BM25 + vector ensemble search with reranking. Recommended for scientific documents where exact terminology matters alongside semantic similarity. |
 
 ### Infrastructure
 
@@ -653,31 +653,25 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Requirement | CFR Section | Technical Controls Available (Validation Required) |
 |---|---|---|
-| **Audit trail** | §11.10(e) | Conversations are timestamped, attributed to an authenticated user, and non-deletable at the application level when `USER_PERMISSIONS_CHAT_DELETE=False`. |
+| **Audit trail** | §11.10(e) | Conversations are timestamped and attributed to an authenticated user. Chat deletion can be disabled at the application level via `USER_PERMISSIONS_CHAT_DELETE=False`. |
 | **Limiting system access** | §11.10(d) | SSO/OIDC integration, role-based access control, `DEFAULT_USER_ROLE=pending` for approval workflow. |
 | **Authority checks** | §11.10(f) | RBAC restricts access to models, documents, and features by functional group. |
 | **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management support availability monitoring. |
-| **Personnel accountability** | §11.10(j) | SSO provides authenticated identity for every interaction. Shared accounts are not supported. |
+| **Personnel accountability** | §11.10(j) | SSO provides authenticated identity. The platform authenticates individual user accounts via SSO/OIDC. |
 | **Open system controls** | §11.30 | Can be deployed as a closed system on internal infrastructure. |
 
 ### EMA Annex 11 - Computerised Systems
 
 | Principle | Technical Controls Available (Validation Required) |
 |---|---|
-| **Data integrity** | Application-level non-deletable conversation records, PostgreSQL WAL for write-ahead logging, automated backups. |
+| **Data integrity** | Chat deletion can be disabled at the application level. PostgreSQL WAL for write-ahead logging. Automated backups. |
 | **Access control** | Multi-tiered: network boundary (TLS proxy), application-level RBAC, SSO identity verification. |
 | **Data migration** | PostgreSQL `pg_dump`/`pg_restore` with integrity verification. Standard, well-documented process. |
 | **Business continuity** | Stateless nodes with automatic failover, Redis HA, PostgreSQL WAL archiving for point-in-time recovery. |
 
 ### What This Might Mean for a Validation Team
 
-If your organization uses a risk-based approach to CSV (Computer System Validation), Open WebUI may be considered for classification as **GAMP Category 4** (configured software), though the final determination depends on your specific deployment, customizations, and use case. A typical validation effort focuses on:
-
-1. **Installation Qualification (IQ)** - Verify the Docker Compose stack deploys correctly with the expected images, volumes, and network configuration.
-2. **Operational Qualification (OQ)** - Verify that RBAC rules restrict access as configured, audit trails capture all interactions, and SSO integration works correctly. The security hardening checklist below serves as a starting point for OQ test cases.
-3. **Performance Qualification (PQ)** - Verify the system performs its intended function in the production environment with real user workflows and document libraries.
-
-Open WebUI's open-source codebase, deterministic container deployment, and comprehensive configuration via environment variables can facilitate this validation approach.
+If your organization uses a risk-based approach to CSV (Computer System Validation), the GAMP categorization, validation scope, and testing depth are decisions your validation team must make based on your specific deployment, customizations, and intended use. Open WebUI's open-source codebase and container-based deployment with version-pinned images may facilitate aspects of your validation process, but the validation strategy itself is an organizational responsibility.
 
 ---
 
@@ -734,7 +728,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
    - Models: Reasoning models only (e.g., Llama 3.1 70B via vLLM)
    - Knowledge bases: MedDRA dictionaries, CIOMS forms, signal detection SOPs
    - Permissions: RAG-only mode (no web search, no file upload)
-    - *Rationale: PV work is safety-critical. Restricting to RAG-only mode limits responses to content drawn from curated internal documents, reducing exposure to uncontrolled external content.*
+    - *Rationale: PV work is safety-critical. Restricting to RAG-only mode prioritizes retrieval from curated internal documents and disables web search, reducing exposure to uncontrolled external content. The underlying model may still draw on its training data.*
 
 5. **Manufacturing / CMC**
    - Models: All available models

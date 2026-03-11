@@ -847,7 +847,7 @@ The following checklist describes operational security measures. **This is not a
 
 ### Data Protection
 
-- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - restricts IT administrators from viewing user conversation content
+- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - restricts IT administrators from viewing user conversation content at the application level
 - [ ] `ENABLE_ADMIN_EXPORT=False` - disables bulk data extraction at the application level
 - [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - disables chat deletion at the application level
 - [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations

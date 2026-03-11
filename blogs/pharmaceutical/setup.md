@@ -27,7 +27,7 @@ What makes the pharma deployment different isn't the infrastructure - it's the *
 
 **Key pharma-specific configuration decisions:**
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` - IT manages the platform without ever seeing the content of scientific conversations. This protects proprietary compound data and pre-competitive research.
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - IT manages the platform without ever seeing the content of scientific conversations. This helps protect proprietary compound data and pre-competitive research.
 - `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates a persistent, timestamped electronic record of every AI interaction, providing the application-level controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
 - `ENABLE_COMMUNITY_SHARING=False` - No data, prompts, or model configurations are shared externally.
 - `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. This helps prevent cross-group data exposure.
@@ -606,7 +606,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Variable | Value | Technical Control Provided |
 |---|---|---|
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) - Audit trail.** Prevents deletion of conversation records, supporting a complete, tamper-evident conversation history. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) - Audit trail.** Prevents deletion of conversation records at the application level, supporting a complete conversation history. |
 | `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **Relevant to §11.10(e) - Audit trail.** Disables temporary chats, ensuring every AI interaction is recorded. |
 | `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Relevant to §11.10(d) - Limiting access.** IT administrators manage the system without viewing scientific content. |
 | `ENABLE_ADMIN_EXPORT` | `False` | **Relevant to §11.10(d) - Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
@@ -653,7 +653,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Requirement | CFR Section | Technical Controls Available (Validation Required) |
 |---|---|---|
-| **Audit trail** | §11.10(e) | Conversations are timestamped, attributed to an authenticated user, and non-deletable when `USER_PERMISSIONS_CHAT_DELETE=False`. |
+| **Audit trail** | §11.10(e) | Conversations are timestamped, attributed to an authenticated user, and non-deletable at the application level when `USER_PERMISSIONS_CHAT_DELETE=False`. |
 | **Limiting system access** | §11.10(d) | SSO/OIDC integration, role-based access control, `DEFAULT_USER_ROLE=pending` for approval workflow. |
 | **Authority checks** | §11.10(f) | RBAC restricts access to models, documents, and features by functional group. |
 | **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management support availability monitoring. |
@@ -664,7 +664,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Principle | Technical Controls Available (Validation Required) |
 |---|---|
-| **Data integrity** | Non-deletable conversation records, PostgreSQL WAL for write-ahead logging, automated backups. |
+| **Data integrity** | Application-level non-deletable conversation records, PostgreSQL WAL for write-ahead logging, automated backups. |
 | **Access control** | Multi-tiered: network boundary (TLS proxy), application-level RBAC, SSO identity verification. |
 | **Data migration** | PostgreSQL `pg_dump`/`pg_restore` with integrity verification. Standard, well-documented process. |
 | **Business continuity** | Stateless nodes with automatic failover, Redis HA, PostgreSQL WAL archiving for point-in-time recovery. |

@@ -156,13 +156,13 @@ services:
   # Open WebUI - Stateless application nodes
   # ---------------------------------------------------------------------------
   open-webui-1:
-    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production/compliance environments
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production environments
     container_name: owui-node-1
     restart: unless-stopped
     environment:
       # --- Core ---
       - WEBUI_URL=${WEBUI_URL}
-      - WEBUI_NAME=${WEBUI_NAME:-Legal AI}
+      - WEBUI_NAME=${WEBUI_NAME:-AI Assistant}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - PORT=8080
 
@@ -239,12 +239,12 @@ services:
   # Docker Compose list-style environment blocks do not support YAML merge keys.
   # If you add or change a variable above, update it here as well.
   open-webui-2:
-    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production/compliance environments
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production environments
     container_name: owui-node-2
     restart: unless-stopped
     environment:
       - WEBUI_URL=${WEBUI_URL}
-      - WEBUI_NAME=${WEBUI_NAME:-Legal AI}
+      - WEBUI_NAME=${WEBUI_NAME:-AI Assistant}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - PORT=8080
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -551,7 +551,7 @@ if [ ! -f .env ]; then
 
 # --- Public URL ---
 WEBUI_URL=https://ai.yourfirm.com
-WEBUI_NAME=Legal AI
+WEBUI_NAME=AI Assistant
 
 # --- Secret key (used for JWT signing - KEEP THIS SECRET) ---
 WEBUI_SECRET_KEY=$(generate_secret)

@@ -1,6 +1,6 @@
-# Pharmaceutical Industry — Technical Setup Guide
+# Pharmaceutical Industry - Technical Setup Guide
 
-This guide is the engineering companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It covers the production deployment, GxP-aligned configuration, and pharma-specific RBAC and knowledge base design.
+This guide is the engineering companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It covers the production deployment, configuration for GxP-relevant environments, and pharma-specific RBAC and knowledge base design.
 
 ---
 
@@ -23,14 +23,14 @@ This guide is the engineering companion to [Private AI for the Pharmaceutical In
 
 The production stack is identical to any Open WebUI enterprise deployment: reverse proxy with TLS, stateless application nodes, PostgreSQL + PGVector for data and vector search, Redis for session coordination, and local inference via Ollama and vLLM. See the [blog post](article.md) for the architecture diagram and rationale.
 
-What makes the pharma deployment different isn't the infrastructure — it's the **configuration layer on top**: how you lock down access, structure knowledge bases around functional groups, and produce the audit trail that GxP demands. That's what this guide focuses on.
+What makes the pharma deployment different isn't the infrastructure - it's the **configuration layer on top**: how you lock down access, structure knowledge bases around functional groups, and produce the audit trail that GxP demands. That's what this guide focuses on.
 
 **Key pharma-specific configuration decisions:**
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` — IT manages the platform without ever seeing the content of scientific conversations. This protects proprietary compound data and pre-competitive research.
-- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` — Creates an immutable, timestamped electronic record of every AI interaction, providing the technical controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
-- `ENABLE_COMMUNITY_SHARING=False` — No data, prompts, or model configurations are shared externally.
-- `BYPASS_MODEL_ACCESS_CONTROL=False` — Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. No cross-contamination.
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - IT manages the platform without ever seeing the content of scientific conversations. This protects proprietary compound data and pre-competitive research.
+- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates an immutable, timestamped electronic record of every AI interaction, providing the technical controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
+- `ENABLE_COMMUNITY_SHARING=False` - No data, prompts, or model configurations are shared externally.
+- `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. No cross-contamination.
 
 ---
 
@@ -52,14 +52,14 @@ For an organization with 500–10,000+ employees and concurrent usage of ~100–
 ### Software Requirements
 
 - **Docker Engine** ≥ 24.0 and **Docker Compose** ≥ 2.20
-- **NVIDIA Container Toolkit** (for GPU nodes) — [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- **TLS certificates** — from your organization's internal CA or Let's Encrypt
-- **LDAP / SSO credentials** — for OAuth/OIDC integration (Okta, Azure AD, Ping Identity, etc.)
-- **DNS entry** — e.g., `ai.yourcompany.com` pointing to the reverse proxy
+- **NVIDIA Container Toolkit** (for GPU nodes) - [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+- **TLS certificates** - from your organization's internal CA or Let's Encrypt
+- **LDAP / SSO credentials** - for OAuth/OIDC integration (Okta, Azure AD, Ping Identity, etc.)
+- **DNS entry** - e.g., `ai.yourcompany.com` pointing to the reverse proxy
 
 ### Network Requirements
 
-- All services communicate on an internal Docker network — no public exposure except the reverse proxy
+- All services communicate on an internal Docker network - no public exposure except the reverse proxy
 - Outbound internet access is **not required** if models are pre-pulled (fully air-gappable)
 - Ports: only `443` (HTTPS) exposed externally
 
@@ -71,7 +71,7 @@ Save this as `docker-compose.yml` in your deployment directory. An accompanying 
 
 ```yaml
 # =============================================================================
-# Open WebUI — Pharma Industry Production Stack
+# Open WebUI - Pharma Industry Production Stack
 # =============================================================================
 # Usage:
 #   1. Run ./setup.sh to generate .env and required directories
@@ -81,7 +81,7 @@ Save this as `docker-compose.yml` in your deployment directory. An accompanying 
 
 services:
   # ---------------------------------------------------------------------------
-  # Reverse Proxy — TLS termination and load balancing
+  # Reverse Proxy - TLS termination and load balancing
   # ---------------------------------------------------------------------------
   nginx:
     image: nginx:alpine
@@ -100,7 +100,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # Open WebUI — Stateless application nodes
+  # Open WebUI - Stateless application nodes
   # ---------------------------------------------------------------------------
   open-webui-1:
     image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for GxP environments
@@ -243,7 +243,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # PostgreSQL 16 + PGVector — Database and vector store
+  # PostgreSQL 16 + PGVector - Database and vector store
   # ---------------------------------------------------------------------------
   postgres:
     image: pgvector/pgvector:pg16
@@ -275,7 +275,7 @@ services:
         -c max_wal_senders=3
 
   # ---------------------------------------------------------------------------
-  # Redis — Session management and WebSocket coordination
+  # Redis - Session management and WebSocket coordination
   # ---------------------------------------------------------------------------
   redis:
     image: redis:7-alpine
@@ -300,7 +300,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # Ollama — Local model inference (smaller models, ≤13B)
+  # Ollama - Local model inference (smaller models, ≤13B)
   # ---------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
@@ -319,7 +319,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # vLLM — GPU-optimized inference (large models, 70B+)
+  # vLLM - GPU-optimized inference (large models, 70B+)
   # ---------------------------------------------------------------------------
   vllm:
     image: vllm/vllm-openai:latest
@@ -434,7 +434,7 @@ Save this as `setup.sh` and run it before your first `docker compose up`:
 ```bash
 #!/usr/bin/env bash
 # =============================================================================
-# Open WebUI — Pharma Industry Setup Script
+# Open WebUI - Pharma Industry Setup Script
 # =============================================================================
 # This script creates the required directory structure, generates secrets,
 # pulls initial models, and validates the environment before first boot.
@@ -492,7 +492,7 @@ generate_secret() {
 if [ ! -f .env ]; then
     cat > .env << EOF
 # =============================================================================
-# Open WebUI — Pharma Industry Environment Configuration
+# Open WebUI - Pharma Industry Environment Configuration
 # Generated on $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # =============================================================================
 
@@ -500,7 +500,7 @@ if [ ! -f .env ]; then
 WEBUI_URL=https://ai.yourcompany.com
 WEBUI_NAME=Pharma AI
 
-# --- Secret key (used for JWT signing — KEEP THIS SECRET) ---
+# --- Secret key (used for JWT signing - KEEP THIS SECRET) ---
 WEBUI_SECRET_KEY=$(generate_secret)
 
 # --- Admin account (created on first startup) ---
@@ -529,14 +529,14 @@ OTEL_ENDPOINT=
 
 # =============================================================================
 # IMPORTANT: Update the following before deploying:
-#   1. WEBUI_URL — your actual domain
-#   2. ADMIN_EMAIL / ADMIN_PASSWORD — your admin credentials
-#   3. HF_TOKEN — your Hugging Face token (for gated models like Llama)
+#   1. WEBUI_URL - your actual domain
+#   2. ADMIN_EMAIL / ADMIN_PASSWORD - your admin credentials
+#   3. HF_TOKEN - your Hugging Face token (for gated models like Llama)
 #   4. Place TLS certs in ./nginx/certs/ (fullchain.pem + privkey.pem)
 # =============================================================================
 EOF
     info ".env file created. Review and update it before starting."
-    warn "Generated admin password is in .env — save it securely."
+    warn "Generated admin password is in .env - save it securely."
 else
     warn ".env already exists. Skipping generation."
 fi
@@ -556,7 +556,7 @@ fi
 
 # Pull models (adjust to your organization's needs)
 MODELS=(
-    "llama3.1:8b"       # Fast — summarization, Q&A, literature triage
+    "llama3.1:8b"       # Fast - summarization, Q&A, literature triage
     "nomic-embed-text"  # Embedding model for RAG
 )
 
@@ -598,7 +598,7 @@ echo "==========================================================================
 
 ## Environment Variable Reference
 
-These are the same Open WebUI environment variables used in any deployment. This section highlights the ones with pharma-specific rationale — for the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
+These are the same Open WebUI environment variables used in any deployment. This section highlights the ones with pharma-specific rationale - for the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
 
 ### Audit Trail & Data Integrity (Technical Controls for 21 CFR Part 11)
 
@@ -606,10 +606,10 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Variable | Value | Technical Control Provided |
 |---|---|---|
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) — Audit trail.** Prevents deletion of conversation records, supporting a complete, tamper-evident conversation history. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **Relevant to §11.10(e) — Audit trail.** Disables temporary chats, ensuring every AI interaction is recorded. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Relevant to §11.10(d) — Limiting access.** IT administrators manage the system without viewing scientific content. |
-| `ENABLE_ADMIN_EXPORT` | `False` | **Relevant to §11.10(d) — Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) - Audit trail.** Prevents deletion of conversation records, supporting a complete, tamper-evident conversation history. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **Relevant to §11.10(e) - Audit trail.** Disables temporary chats, ensuring every AI interaction is recorded. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Relevant to §11.10(d) - Limiting access.** IT administrators manage the system without viewing scientific content. |
+| `ENABLE_ADMIN_EXPORT` | `False` | **Relevant to §11.10(d) - Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
 
 ### Access Control
 
@@ -617,7 +617,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 |---|---|---|
 | `ENABLE_SIGNUP` | `False` | All users provisioned via SSO or admin. No uncontrolled account creation. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users require explicit admin approval before accessing any AI capabilities. |
-| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Ensures RBAC model restrictions are enforced — users only see models assigned to their functional group. |
+| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Ensures RBAC model restrictions are enforced - users only see models assigned to their functional group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | No data, prompts, or model configurations shared to external community hubs. |
 
@@ -625,7 +625,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Variable | Value | Rationale |
 |---|---|---|
-| `VECTOR_DB` | `pgvector` | Uses PostgreSQL's PGVector extension — one database for both application data and vector search. |
+| `VECTOR_DB` | `pgvector` | Uses PostgreSQL's PGVector extension - one database for both application data and vector search. |
 | `RAG_TOP_K` | `5` | Returns the top 5 most relevant document chunks. Tune based on document density. |
 | `ENABLE_RAG_HYBRID_SEARCH` | `True` | BM25 + vector ensemble search with reranking. Critical for scientific documents where exact terminology matters alongside semantic similarity. |
 
@@ -645,11 +645,11 @@ These are the same Open WebUI environment variables used in any deployment. This
 ## GxP Alignment Guide
 
 > [!IMPORTANT]
-> **Open WebUI is a general-purpose AI platform. It is not a validated GxP system, and nothing in this guide should be interpreted as a compliance determination.** When deployed with the configuration described here, Open WebUI provides technical controls that your organization's quality team can evaluate as part of their own Computer System Validation (CSV) effort. The mappings below are informational — your validation team must independently verify that each control meets your regulatory obligations.
+> **Open WebUI is a general-purpose AI platform. It is not a validated GxP system, and nothing in this guide should be interpreted as a compliance determination.** When deployed with the configuration described here, Open WebUI provides technical controls that your organization's quality team can evaluate as part of their own Computer System Validation (CSV) effort. The mappings below are informational - your validation team must independently verify that each control meets your regulatory obligations.
 >
 > All AI-generated content is unvalidated and must be reviewed by qualified personnel before use in any clinical, regulatory, or safety-critical context.
 
-### 21 CFR Part 11 — Electronic Records; Electronic Signatures
+### 21 CFR Part 11 - Electronic Records; Electronic Signatures
 
 | Requirement | CFR Section | Technical Controls Available (Validation Required) |
 |---|---|---|
@@ -660,7 +660,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 | **Personnel accountability** | §11.10(j) | SSO provides authenticated identity for every interaction. Shared accounts are not supported. |
 | **Open system controls** | §11.30 | Designed for deployment as a closed system on internal infrastructure. |
 
-### EMA Annex 11 — Computerised Systems
+### EMA Annex 11 - Computerised Systems
 
 | Principle | Technical Controls Available (Validation Required) |
 |---|---|
@@ -673,9 +673,9 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 If your organization uses a risk-based approach to CSV (Computer System Validation), Open WebUI may be considered for classification as **GAMP Category 4** (configured software), though the final determination depends on your specific deployment, customizations, and use case. A typical validation effort focuses on:
 
-1. **Installation Qualification (IQ)** — Verify the Docker Compose stack deploys correctly with the expected images, volumes, and network configuration.
-2. **Operational Qualification (OQ)** — Verify that RBAC rules restrict access as configured, audit trails capture all interactions, and SSO integration works correctly. The security hardening checklist below serves as a starting point for OQ test cases.
-3. **Performance Qualification (PQ)** — Verify the system performs its intended function in the production environment with real user workflows and document libraries.
+1. **Installation Qualification (IQ)** - Verify the Docker Compose stack deploys correctly with the expected images, volumes, and network configuration.
+2. **Operational Qualification (OQ)** - Verify that RBAC rules restrict access as configured, audit trails capture all interactions, and SSO integration works correctly. The security hardening checklist below serves as a starting point for OQ test cases.
+3. **Performance Qualification (PQ)** - Verify the system performs its intended function in the production environment with real user workflows and document libraries.
 
 Open WebUI's open-source codebase, deterministic container deployment, and comprehensive configuration via environment variables make it well-suited for this validation approach.
 
@@ -703,7 +703,7 @@ ENABLE_OAUTH_GROUP_CREATION=True
 ENABLE_OAUTH_ROLE_MANAGEMENT=True
 ```
 
-> **Tip:** Set `ENABLE_OAUTH_GROUP_MANAGEMENT=True` so that functional group membership syncs automatically from your identity provider. When a scientist transfers from R&D to Medical Affairs in your directory, their Open WebUI permissions update on next login — no manual reprovisioning.
+> **Tip:** Set `ENABLE_OAUTH_GROUP_MANAGEMENT=True` so that functional group membership syncs automatically from your identity provider. When a scientist transfers from R&D to Medical Affairs in your directory, their Open WebUI permissions update on next login - no manual reprovisioning.
 
 ### Step 2: Create Functional Groups
 
@@ -716,7 +716,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
    - Models: All available models
    - Knowledge bases: Compound libraries, assay protocols, literature databases
    - Permissions: Code interpreter enabled, file upload enabled, web search enabled
-   - *Rationale: Discovery scientists need the broadest toolset — running analysis scripts on screening data, uploading proprietary assay results, and searching public literature.*
+   - *Rationale: Discovery scientists need the broadest toolset - running analysis scripts on screening data, uploading proprietary assay results, and searching public literature.*
 
 2. **Clinical Operations**
    - Models: All available models
@@ -734,7 +734,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
    - Models: Reasoning models only (e.g., Llama 3.1 70B via vLLM)
    - Knowledge bases: MedDRA dictionaries, CIOMS forms, signal detection SOPs
    - Permissions: RAG-only mode (no web search, no file upload)
-   - *Rationale: PV work is safety-critical. Restricting to RAG-only mode ensures responses are grounded exclusively in validated internal documents — no uncontrolled external content.*
+   - *Rationale: PV work is safety-critical. Restricting to RAG-only mode ensures responses are grounded exclusively in validated internal documents - no uncontrolled external content.*
 
 5. **Manufacturing / CMC**
    - Models: All available models
@@ -785,13 +785,13 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 
 | Knowledge Base | Contents | Functional Groups | Notes |
 |---|---|---|---|
-| `Compound Library` | Structures, SAR data, screening results, MoA summaries | R&D / Discovery | *High sensitivity — restrict strictly to R&D* |
+| `Compound Library` | Structures, SAR data, screening results, MoA summaries | R&D / Discovery | *High sensitivity - restrict strictly to R&D* |
 | `Assay Protocols` | Standard assay procedures, validation data, reference standards | R&D / Discovery | |
 | `Clinical Protocols` | Study protocols, ICH E6/E8/E9 references, SAPs | Clinical Operations | |
 | `CRF Templates` | Case report forms, data management plans, reconciliation guides | Clinical Operations | |
 | `Regulatory Guidance` | FDA guidance library, EMA guidelines, ICH harmonized guidelines | Regulatory Affairs | *Consider splitting by region (FDA/EMA/PMDA)* |
 | `Submission Templates` | eCTD module templates, cover letters, precedent review correspondence | Regulatory Affairs | |
-| `PV Reference` | MedDRA hierarchy, CIOMS forms, signal detection SOPs, PSUR templates | Pharmacovigilance | *Validated documents only — no drafts* |
+| `PV Reference` | MedDRA hierarchy, CIOMS forms, signal detection SOPs, PSUR templates | Pharmacovigilance | *Validated documents only - no drafts* |
 | `Manufacturing SOPs` | Batch records, process validation reports, equipment qualification docs | Manufacturing / CMC | |
 | `Medical Information` | Product monographs, SmPCs, congress posters, medical response letters | Medical Affairs | |
 | `Company Policies` | HR handbook, compliance policies, IT security procedures, training guides | All groups | |
@@ -815,54 +815,54 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 - **Regulatory submissions**: Large eCTD modules should be split by section (e.g., upload Module 2.5 Quality Overall Summary separately from Module 3.2.P Drug Product). This improves retrieval precision significantly.
 - **SOPs and batch records**: These are typically well-structured documents that RAG handles effectively. Use descriptive filenames that include the SOP number and revision (e.g., `SOP-MFG-042-Rev3-Tablet-Compression.pdf`).
 - **Literature databases**: For large literature collections (1,000+ papers), consider organizing into topic-specific knowledge bases rather than one monolithic collection. This lets users target their retrieval.
-- **Citation verification**: RAG provides relevance scores with each retrieved chunk. Scientists must always verify citations against the source — RAG reduces hallucination but does not eliminate it. This is especially critical for PV and regulatory use cases.
+- **Citation verification**: RAG provides relevance scores with each retrieved chunk. Scientists must always verify citations against the source - RAG reduces hallucination but does not eliminate it. **All AI-generated content must be reviewed by qualified personnel before use in any clinical, regulatory, or safety-critical context.** This is especially critical for PV and regulatory use cases.
 - **Version control**: When SOPs are revised or guidance documents update, upload the new version and remove the old one. Knowledge bases can be updated without downtime. Maintain a document version log outside Open WebUI for your QMS.
 
 ### Embedding Model Selection
 
 The Docker Compose stack pulls `nomic-embed-text` via Ollama for generating embeddings locally. Configure this in **Admin Panel → Settings → Documents → Embedding Model**.
 
-For higher-quality embeddings (recommended for 10,000+ document deployments), consider using a dedicated embedding endpoint. Set `RAG_OPENAI_API_BASE_URL` to point to a self-hosted embedding service or use Ollama's built-in embedding support (no data leaves your network either way).
+For higher-quality embeddings (recommended for 10,000+ document deployments), consider using a dedicated embedding endpoint. Set `RAG_OPENAI_API_BASE_URL` to point to a self-hosted embedding service or use Ollama's built-in embedding support (both options keep data on your infrastructure when configured accordingly).
 
 ---
 
 ## Security Hardening Checklist
 
-Use this checklist before going to production. Items marked with a regulatory reference map directly to a GxP or data protection requirement.
+Use this checklist before going to production. Items are organized by security domain; those marked with a regulatory reference relate to common GxP or data protection considerations.
 
 ### Network Layer
 
-- [ ] TLS 1.2+ enforced on the reverse proxy — no plaintext HTTP traffic reaches Open WebUI
+- [ ] TLS 1.2+ enforced on the reverse proxy - no plaintext HTTP traffic reaches Open WebUI
 - [ ] Only port 443 is exposed to the user network; all other services are on internal Docker network
 - [ ] HSTS header set with `max-age=63072000; includeSubDomains`
 - [ ] Security headers: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`
 - [ ] Rate limiting configured on the reverse proxy to prevent abuse
-- [ ] DNS resolves only to the reverse proxy — no direct access to application nodes
+- [ ] DNS resolves only to the reverse proxy - no direct access to application nodes
 
 ### Authentication & Authorization *(§11.10(d), Annex 11 §12)*
 
-- [ ] `ENABLE_SIGNUP=False` — no self-registration
-- [ ] `DEFAULT_USER_ROLE=pending` — new SSO users require admin approval
+- [ ] `ENABLE_SIGNUP=False` - no self-registration
+- [ ] `DEFAULT_USER_ROLE=pending` - new SSO users require admin approval
 - [ ] SSO/OIDC configured with your organization's identity provider
-- [ ] `ENABLE_OAUTH_GROUP_MANAGEMENT=True` — groups sync from IdP
-- [ ] `ENABLE_OAUTH_ROLE_MANAGEMENT=True` — roles sync from IdP
-- [ ] `BYPASS_MODEL_ACCESS_CONTROL=False` — RBAC enforced on model access
-- [ ] `BYPASS_ADMIN_ACCESS_CONTROL=False` — admins subject to workspace ACLs
+- [ ] `ENABLE_OAUTH_GROUP_MANAGEMENT=True` - groups sync from IdP
+- [ ] `ENABLE_OAUTH_ROLE_MANAGEMENT=True` - roles sync from IdP
+- [ ] `BYPASS_MODEL_ACCESS_CONTROL=False` - RBAC enforced on model access
+- [ ] `BYPASS_ADMIN_ACCESS_CONTROL=False` - admins subject to workspace ACLs
 
 ### Data Integrity & Audit Trail *(§11.10(e), Annex 11 §9)*
 
-- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` — IT cannot view scientific conversations
-- [ ] `ENABLE_ADMIN_EXPORT=False` — prevents bulk data extraction
-- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` — immutable audit trail
-- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` — no unlogged conversations
-- [ ] `ENABLE_COMMUNITY_SHARING=False` — no external data sharing
+- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - IT cannot view scientific conversations
+- [ ] `ENABLE_ADMIN_EXPORT=False` - prevents bulk data extraction
+- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - immutable audit trail
+- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
+- [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)
 - [ ] Redis `requirepass` set if Redis is network-accessible (not needed when Redis is internal-only via Docker network)
 - [ ] Backup encryption enabled (see [Backup & Disaster Recovery](#backup--disaster-recovery))
 
 ### Model & Inference Security
 
-- [ ] All models run locally via Ollama or vLLM — no external API calls for inference
+- [ ] All models run locally via Ollama or vLLM - no external API calls for inference
 - [ ] Hugging Face token is stored only in `.env`, not committed to version control
 - [ ] `.env` file has restrictive permissions: `chmod 600 .env`
 - [ ] For production GxP deployments, consider migrating secrets from `.env` to a dedicated secrets manager (e.g., HashiCorp Vault, AWS Secrets Manager)
@@ -900,7 +900,7 @@ Add this to your crontab (`crontab -e`) or scheduling system:
 
 ```bash
 #!/usr/bin/env bash
-# Daily PostgreSQL backup — run via cron at 02:00 UTC
+# Daily PostgreSQL backup - run via cron at 02:00 UTC
 # 0 2 * * * /opt/openwebui/backup-postgres.sh
 
 set -euo pipefail

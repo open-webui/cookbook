@@ -1,0 +1,158 @@
+# What Would It Take for a Law Firm to Run AI In-House?
+
+*For managing partners, CIOs, and legal technology leaders evaluating AI solutions for their firm.*
+
+*This article is for informational purposes only and is not legal advice. Firms should evaluate AI deployments with counsel based on their jurisdiction, practice areas, and client obligations.*
+
+<!-- TODO: Replace with hero image for social sharing previews -->
+![Private AI for Law Firms](images/hero.png)
+
+---
+
+## Why This Question Matters Now
+
+In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. [The court sanctioned both the lawyer and his firm.](https://www.courtlistener.com/docket/63107798/54/mata-v-avianca-inc/) Since then, multiple bar associations have issued ethics guidance emphasizing that attorneys should verify AI-generated content, but verification without source traceability is difficult at scale.
+
+That incident is part of a broader pattern. Three challenges are slowing AI adoption across the legal industry:
+
+**Hallucinations are a liability.** AI-generated content that cites nonexistent cases or misrepresents holdings exposes firms to sanctions, malpractice claims, and reputational damage. Attorneys need traceability - the ability to verify every claim against a source document.
+
+**Client data in hosted models can create privilege and confidentiality risk.** Sending case materials to cloud AI providers can raise concerns about waiver of attorney-client privilege under [ABA Model Rule 1.6](https://www.americanbar.org/news/abanews/aba-news-archives/2024/07/aba-issues-first-ethics-guidance-ai-tools/). While some ethics opinions (e.g., [ABA Formal Opinion 477R](https://docs.tbpr.org/pub/aba%20formal%20opinion%20477.authcheckdam.pdf)) suggest cloud use can be permissible with adequate safeguards, many firms handling sensitive litigation, M&A, or regulatory matters prefer to reduce third-party data exposure where possible. Self-hosting can support a firm's privilege protection efforts, but it does not alone guarantee privilege - firms should consult ethics counsel on their specific obligations.
+
+**Compliance requirements are multiplying.** State bar AI disclosure rules, GDPR for international practices, and internal governance obligations often require auditable, controllable AI infrastructure rather than opaque data handling.
+
+These challenges share a common root: some firms are asking whether AI they can *control*, *observe*, and *validate* internally might be worth exploring - rather than relying solely on third-party platforms.
+
+---
+
+## What Self-Hosted AI Would Actually Require
+
+There's no shortage of legal AI products on the market - many are polished, well-funded, and easy to adopt. The strategic question is control: where data is processed, who can access it, and how confidently you can prove that to clients, courts, and regulators. For routine work with low-sensitivity data, shared infrastructure may be a reasonable tradeoff. For firms handling privileged litigation, regulatory investigations, or M&A due diligence, tighter control is often worth evaluating.
+
+If a firm were to explore self-hosted AI, what capabilities would matter? Based on the concerns above, the requirements tend to cluster around four areas:
+
+- **Data locality.** The ability to run AI entirely on firm-controlled infrastructure - on-premise, private cloud, or air-gapped. With the right configuration, this can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
+
+- **Source-grounded responses with citations.** The ability for attorneys to query the firm's briefs, precedents, statutes, and internal memos, and receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
+
+- **Group-based access control.** The ability to map role-based permissions to practice groups, restrict administrators from viewing certain conversations, and control model access, document access, and feature access per group.
+
+- **Configurable audit and retention controls.** Chat retention controls, configurable logging, SSO integration, and restrictions on chat deletion that can support a firm's governance and audit requirements.
+
+These aren't unique to any one product - they're the criteria that firms exploring self-hosted AI tend to evaluate against.
+
+---
+
+## One Approach: Open-Source Self-Hosting
+
+[Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. It's one example of a platform that can be configured to address the requirements above - firms should evaluate whether and how its capabilities fit their own compliance and governance requirements.
+
+### Illustrative Example
+
+> **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Firms must design, test, and validate their own AI workflows according to their governance requirements.
+
+When configured with a firm's internal document library, an associate preparing a motion types a question into Open WebUI. The response can draw from the firm's briefs and cite the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The conversation can be logged under their user account for search and audit workflows. When the deployment is configured to avoid external connections, data can remain on firm-controlled systems.
+
+For a partner reviewing the associate's work, the conversation log can show which queries were run, what sources were cited, and when. That level of traceability is increasingly emphasized in ethics guidance and internal AI governance.
+
+![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
+
+---
+
+## What Access Control Could Look Like
+
+Open WebUI includes a group-based access control system. The table below shows one example of how a firm might map practice groups to AI capabilities. **This is an illustrative configuration - firms should design their own group structure based on their specific needs, risk tolerance, and governance requirements.**
+
+![Admin panel showing practice group configuration](images/admin_groups.png)
+
+| Practice Group | AI Capabilities | Knowledge Bases | Special Permissions |
+|---|---|---|---|
+| **Litigation** | Full | Case law, motions, discovery templates | Web search enabled |
+| **Corporate / M&A** | Full | Deal templates, regulatory filings, due diligence checklists | Document extraction *(extract structured data from contracts and filings)* |
+| **Intellectual Property** | Full | Patent databases, prosecution templates | Code interpreter *(run analysis scripts on patent claim data)* |
+| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses grounded in firm documents)* |
+| **Paralegals / Staff** | Basic tasks only | Firm procedures, HR policies | No file upload, no web search |
+
+Groups can synchronize with your identity provider (Okta, Azure AD, Google Workspace) via OAuth, so practice group membership can stay aligned with your firm's directory.
+
+---
+
+## What Infrastructure Is Involved
+
+*This section is a reference for your IT or engineering team. If you're evaluating at a strategic level, the key takeaway is simple: a self-hosted AI platform can run on existing infrastructure (VMware, Azure, AWS, or bare metal), scale with the firm, and be deployed with minimal external dependencies.*
+
+For large firms (200-1,000+ attorneys), a production deployment typically requires high availability and data isolation. Here's a reference architecture using Open WebUI - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
+
+```mermaid
+flowchart TB
+    subgraph clients["Clients"]
+        browser["Browser / PWA"]
+    end
+
+    subgraph proxy["Network Boundary"]
+        lb["Reverse Proxy<br/>(Nginx / Traefik)<br/>TLS Termination"]
+    end
+
+    subgraph owui["Open WebUI Cluster"]
+        owui1["Open WebUI<br/>Instances"]
+    end
+
+    subgraph data["Data Layer"]
+        pg["PostgreSQL 16<br/>+ PGVector"]
+        redis["Redis<br/>Sessions & WebSocket"]
+        storage["Shared Storage<br/>(S3-compatible / NFS)"]
+    end
+
+    subgraph inference["LLM Inference Layer"]
+        ollama["Ollama<br/>(Small Local Models)"]
+        vllm["vLLM<br/>(Large Local Models)"]
+    end
+
+    subgraph optional["Optional Services"]
+        functions["Functions<br/>(Built-in Plugins)"]
+        otel["OpenTelemetry<br/>Collector"]
+    end
+
+    clients --> proxy
+    proxy --> owui
+    owui --> data
+    owui --> inference
+    owui -.-> optional
+```
+
+**Key design decisions:**
+- **Stateless application nodes** - horizontal scaling allows capacity to flex with demand across the firm
+- **Inference can run locally** - via Ollama (lightweight models) and vLLM (large models with GPU optimization), so prompts can stay on-network when configured accordingly
+- **Unified data layer** - PostgreSQL handles both application data and vector search, reducing operational complexity
+- **Redis session coordination** - enables multi-node deployments where any instance can serve any request seamlessly
+
+---
+
+## Considerations Before Getting Started
+
+Self-hosting AI is not trivial. Before committing, firms should consider:
+
+- **Infrastructure costs.** Open WebUI itself is free, but GPU servers, storage, and networking are not. A single practice group pilot may run on one GPU server; a firm-wide deployment involves dedicated compute and storage.
+- **Governance design.** Who approves AI use cases? How are outputs reviewed? What's the policy for AI-assisted work product? These questions matter more than the technology.
+- **Validation and testing.** Any AI deployment should go through security review, governance controls design, and integration testing before production use. This is typically a multi-week program.
+- **Ongoing maintenance.** Model updates, security patches, user support, and knowledge base curation are ongoing responsibilities.
+
+For firms that want to explore the technical details, the complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion guide:
+
+**[Technical Setup Guide →](setup.md)**
+
+For organizations that want deployment guidance, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) offers hands-on support including security and compliance guidance *(compliance determination remains the firm's responsibility)*, white-label branding, and dedicated SLAs.
+
+*Note: No software alone establishes legal compliance. Firms should validate controls, policies, and use cases with qualified legal and security teams.*
+
+**[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
+
+---
+
+### Disclaimer
+
+*Open WebUI is a general-purpose AI platform, not a legal technology product validated for any specific regulatory or ethical standard. All compliance determinations - including attorney-client privilege, bar ethics obligations, data protection regulations, and any other applicable framework - are the sole responsibility of the deploying firm. AI-generated content is not legal advice and is not a substitute for professional legal judgment. All AI outputs must be reviewed and verified by qualified attorneys before use.*
+
+---
+
+*Open WebUI is free to use and self-hostable. It powers AI deployments at organizations ranging from small teams to Fortune 500 companies. [See who's using Open WebUI →](https://docs.openwebui.com/enterprise/customers/)*

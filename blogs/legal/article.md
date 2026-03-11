@@ -62,7 +62,7 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **Litigation** | Full | Case law, motions, discovery templates | Web search enabled |
 | **Corporate / M&A** | Full | Deal templates, regulatory filings, due diligence checklists | Document extraction *(extract structured data from contracts and filings)* |
 | **Intellectual Property** | Full | Patent databases, prosecution templates | Code interpreter *(run analysis scripts on patent claim data)* |
-| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses limited to firm documents, no general knowledge)* |
+| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses grounded in firm documents only)* |
 | **Paralegals / Staff** | Basic tasks only | Firm procedures, HR policies | No file upload, no web search |
 
 Groups can synchronize with your identity provider (Okta, Azure AD, Google Workspace) via OAuth, so practice group membership can stay aligned with your firm's directory.

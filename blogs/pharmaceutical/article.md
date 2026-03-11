@@ -43,7 +43,7 @@ Self-hosting changes the equation. Instead of trusting vendor claims about data 
 
 ### Illustrative Example
 
-> **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a tool that can support these workflows - it does not replace them.
+> **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a general-purpose tool - it does not replace these processes.
 
 A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI and queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response pulls from three internal clinical study reports, cites each by document name with relevance scores, and structures the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF, reviews and edits the content according to her organization's quality procedures, and obtains the required sign-offs before including any AI-assisted content in the submission. The entire exchange is logged under her SSO identity.
 
@@ -66,7 +66,7 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **R&D / Discovery** | Full | Compound libraries, assay protocols, literature databases | Code interpreter *(run analysis scripts on screening data)* |
 | **Clinical Operations** | Full | Study protocols, CRF templates, monitoring plan libraries | Web search enabled |
 | **Regulatory Affairs** | Full | eCTD templates, FDA/EMA guidance, precedent correspondence | Document extraction *(structured data from regulatory letters)* |
-| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses restricted to internal source documents)* |
+| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses grounded in internal source documents only)* |
 | **Manufacturing / CMC** | Full | Batch records, process validation reports, equipment SOPs | File upload enabled |
 | **Medical Affairs** | Full | Product monographs, congress abstracts, KOL slide decks | Web search enabled |
 | **Support Staff** | Basic tasks only | Company policies, HR procedures, training materials | No file upload, no web search |
@@ -128,7 +128,7 @@ flowchart TB
 
 ## Get Started
 
-Open WebUI is **free to use**. Infrastructure costs depend on your organization's scale - a single-department pilot can run on one GPU server in your existing environment, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full validated rollout takes a few weeks.
+Open WebUI is **free to use**. Infrastructure costs depend on your organization's scale - a single-department pilot can run on one GPU server in your existing environment, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full production rollout typically takes a few weeks.
 
 The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
 

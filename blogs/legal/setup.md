@@ -124,7 +124,7 @@ Save this as `docker-compose.yml` in your deployment directory. An accompanying 
 
 ```yaml
 # =============================================================================
-# Open WebUI - Legal Industry Production Stack
+# Open WebUI - Production Stack
 # =============================================================================
 # Usage:
 #   1. Run ./setup.sh to generate .env and required directories
@@ -847,9 +847,9 @@ The following checklist describes operational security measures. **This is not a
 
 ### Data Protection
 
-- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - supports attorney-client privilege protection *(consult ethics counsel for your specific obligations)*
-- [ ] `ENABLE_ADMIN_EXPORT=False` - prevents bulk data extraction
-- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - application-level deletion disabled for audit trail
+- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - restricts IT administrators from viewing user conversation content
+- [ ] `ENABLE_ADMIN_EXPORT=False` - disables bulk data extraction at the application level
+- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - disables chat deletion at the application level
 - [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
 - [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)
@@ -858,7 +858,7 @@ The following checklist describes operational security measures. **This is not a
 
 ### Model & Inference Security
 
-- [ ] All models run locally via Ollama or vLLM - no external API calls for inference
+- [ ] When configured for local-only inference, all models run via Ollama or vLLM on your infrastructure
 - [ ] Hugging Face token is stored only in `.env`, not committed to version control
 - [ ] `.env` file has restrictive permissions: `chmod 600 .env`
 - [ ] For production deployments, consider migrating secrets from `.env` to a dedicated secrets manager (e.g., HashiCorp Vault, AWS Secrets Manager)

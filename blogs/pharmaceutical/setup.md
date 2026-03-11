@@ -649,23 +649,19 @@ These are the same Open WebUI environment variables used in any deployment. This
 >
 > All AI-generated content is unvalidated and must be reviewed by qualified personnel before use in any clinical, regulatory, or safety-critical context.
 
-### 21 CFR Part 11 - Electronic Records; Electronic Signatures
+### Technical Controls Available (Validation Required)
 
-| Requirement | CFR Section | Technical Controls Available (Validation Required) |
-|---|---|---|
-| **Audit trail** | §11.10(e) | Conversations are timestamped and attributed to an authenticated user. Chat deletion can be disabled at the application level via `USER_PERMISSIONS_CHAT_DELETE=False`. |
-| **Limiting system access** | §11.10(d) | SSO/OIDC integration, role-based access control, `DEFAULT_USER_ROLE=pending` for approval workflow. |
-| **Authority checks** | §11.10(f) | RBAC restricts access to models, documents, and features by functional group. |
-| **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management support availability monitoring. |
-| **Personnel accountability** | §11.10(j) | SSO provides authenticated identity. The platform authenticates individual user accounts via SSO/OIDC. |
-| **Open system controls** | §11.30 | Can be deployed as a closed system on internal infrastructure. |
+The following table lists technical capabilities that Open WebUI provides when configured as described in this guide. **These are not compliance claims. Your validation team must independently determine whether these controls satisfy your specific regulatory obligations.**
 
-### EMA Annex 11 - Computerised Systems
-
-| Principle | Technical Controls Available (Validation Required) |
+| Area | Technical Controls |
 |---|---|
+| **Audit trail** | Conversations are timestamped and attributed to an authenticated user. Chat deletion can be disabled at the application level via `USER_PERMISSIONS_CHAT_DELETE=False`. |
+| **System access** | SSO/OIDC integration, role-based access control, `DEFAULT_USER_ROLE=pending` for approval workflow. |
+| **Authorization** | RBAC restricts access to models, documents, and features by functional group. |
+| **Availability monitoring** | Health checks, OpenTelemetry integration, and Redis session management support monitoring. |
+| **User identity** | SSO provides authenticated identity. The platform authenticates individual user accounts via SSO/OIDC. |
+| **Deployment model** | Can be deployed on internal infrastructure with no external dependencies when models are pre-loaded. |
 | **Data integrity** | Chat deletion can be disabled at the application level. PostgreSQL WAL for write-ahead logging. Automated backups. |
-| **Access control** | Multi-tiered: network boundary (TLS proxy), application-level RBAC, SSO identity verification. |
 | **Data migration** | PostgreSQL `pg_dump`/`pg_restore` with integrity verification. Standard, well-documented process. |
 | **Business continuity** | Stateless nodes with automatic failover, Redis HA, PostgreSQL WAL archiving for point-in-time recovery. |
 

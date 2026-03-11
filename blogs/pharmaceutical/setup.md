@@ -11,7 +11,7 @@ This guide is a technical reference companion to [What Would It Take for a Pharm
 3. [Docker Compose Reference](#docker-compose-reference)
 4. [Setup Script](#setup-script)
 5. [Environment Variable Reference](#environment-variable-reference)
-6. [GxP Alignment - Informational Reference](#gxp-alignment---informational-reference)
+6. [Technical Controls Reference](#technical-controls-reference)
 7. [RBAC Configuration Guide](#rbac-configuration-guide)
 8. [Knowledge Base Setup Guide](#knowledge-base-setup-guide)
 9. [Security Hardening Checklist](#security-hardening-checklist)
@@ -642,7 +642,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 ---
 
-## GxP Alignment - Informational Reference
+## Technical Controls Reference
 
 > [!IMPORTANT]
 > **Open WebUI is a general-purpose AI platform. It is not a validated GxP system, and nothing in this guide should be interpreted as a compliance determination.** When deployed with the configuration described here, Open WebUI provides technical controls that your organization's quality team can evaluate as part of their own Computer System Validation (CSV) effort. The mappings below are informational - your validation team must independently verify that each control meets your regulatory obligations.

@@ -53,7 +53,7 @@ These aren't unique to any one product - they're the criteria that firms explori
 
 When configured with a firm's internal document library, an associate preparing a motion types a question into Open WebUI. The response can draw from the firm's briefs and cite the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The conversation can be logged under their user account for search and audit workflows. When the deployment is configured to avoid external connections, data can remain on firm-controlled systems.
 
-For a partner reviewing the associate's work, the audit trail can show which AI-generated content was used, what sources it was grounded in, and when. That level of traceability is increasingly emphasized in ethics guidance and internal AI governance.
+For a partner reviewing the associate's work, the conversation log can show which queries were run, what sources were cited, and when. That level of traceability is increasingly emphasized in ethics guidance and internal AI governance.
 
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
 

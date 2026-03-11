@@ -77,7 +77,7 @@ Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/fun
 
 - **Rate limiting**: Prevent runaway local LLM usage during bulk document processing
 - **Toxic message filtering**: Content safety guardrails
-- **LLM-Guard prompt injection scanning**: Protect against adversarial inputs that might attempt to extract privileged information
+- **LLM-Guard prompt injection scanning**: Scan for adversarial inputs that might attempt to extract privileged information
 - **Langfuse monitoring**: Detailed usage analytics per user, model, and practice group
 - **Custom RAG functions**: Firm-specific retrieval logic, e.g., prioritizing recent case law or jurisdiction-specific statutes
 
@@ -664,8 +664,8 @@ The Docker Compose file above includes the most important variables for a legal 
 | `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | Disables sharing prompts/models to the Open WebUI Community hub. |
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Audit trail.** Users cannot delete chat history, preserving the full conversation record. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Prevents users from creating temporary (unlogged) chats that would bypass the audit trail. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Audit trail.** Users cannot delete chat history at the application level, preserving the full conversation record. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Prevents users from creating temporary (unlogged) chats that could bypass audit trail controls. |
 
 ### RAG Configuration
 

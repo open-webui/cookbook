@@ -31,7 +31,7 @@ There's no shortage of legal AI products on the market - many are polished, well
 
 Self-hosting can provide a level of direct operational control that many SaaS products do not: the ability to inspect and validate how data is handled in your own environment. Here's what that looks like in practice, and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, supports it:
 
-- **Keep sensitive workflows inside firm-controlled infrastructure.** Open WebUI can run on your infrastructure (on-premise, private cloud, or air-gapped). With the right configuration, firms can reduce third-party data exposure, limit model training risk, and disable external API calls.
+- **Keep sensitive workflows inside firm-controlled infrastructure.** Open WebUI can run on your infrastructure (on-premise, private cloud, or air-gapped). With the right configuration, firms can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
 
 - **Ground outputs in your own documents.** Attorneys can query the firm's briefs, precedents, statutes, and internal memos, then receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can significantly improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
 

@@ -23,7 +23,7 @@ Three specific challenges are slowing AI adoption:
 
 **Scientific hallucinations compound through the pipeline.** When an AI fabricates a drug-drug interaction, misattributes a clinical outcome to the wrong study arm, or cites a retracted paper, the consequences aren't just embarrassing - they can contaminate safety assessments, mislead regulatory reviewers, and delay or derail programs worth hundreds of millions. Scientists need every AI-generated claim traceable to a source document they can verify themselves.
 
-The common thread: pharma needs AI infrastructure it can *deploy inside its own walls*, *validate against its own standards*, and *audit with its own tools*.
+The common thread: many organizations are looking for AI infrastructure they can *deploy inside their own walls*, *validate against their own standards*, and *audit with their own tools*.
 
 ---
 
@@ -33,13 +33,13 @@ The market is full of "AI for life sciences" products - polished, well-funded, a
 
 Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - organizations should evaluate whether and how these capabilities fit their own regulatory, quality, and governance requirements:
 
-- **Designed to keep all data on your infrastructure.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
+- **Data locality by design.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
 
-- **Source-grounded responses for scientific rigor.** Scientists query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation links back to the original document. This reduces hallucination risk and makes claims verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
+- **Source-grounded responses.** Scientists query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation links back to the original document. This can reduce hallucination risk and make claims more verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
 
-- **Organizational access control out of the box.** Permissions map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it, helping to prevent unintended cross-group data exposure. IT administrators can manage the platform without ever viewing the content of scientific conversations.
+- **Configurable access control.** Permissions can map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it, which can help reduce unintended cross-group data exposure. IT administrators can manage the platform without viewing the content of user conversations.
 
-- **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), the application prevents users from deleting conversations or creating unlogged sessions. Combined with SSO integration, this provides the technical controls needed to support your organization's electronic record-keeping requirements.
+- **Configurable audit and retention controls.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), the application disables chat deletion and temporary chats at the application level. Combined with SSO integration, this provides technical controls that organizations can evaluate for their electronic record-keeping requirements.
 
 ### Illustrative Example
 
@@ -142,7 +142,6 @@ If your organization wants hands-on deployment support, [Open WebUI Enterprise](
 - **White-label branding** - Match the AI interface to your corporate identity
 - **Dedicated support & SLAs** - Direct engineering access for architecture review and incident response
 
-Your compounds, your protocols, your models - on your infrastructure.
 
 **[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
 

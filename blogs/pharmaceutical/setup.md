@@ -133,7 +133,7 @@ services:
       - OPENAI_API_KEY=${VLLM_API_KEY:-sk-none}
       - ENABLE_OPENAI_API=True
 
-      # --- Pharma-specific security defaults ---
+      # --- Security defaults ---
       - ENABLE_SIGNUP=False
       - DEFAULT_USER_ROLE=pending
       - ENABLE_ADMIN_CHAT_ACCESS=False
@@ -779,7 +779,7 @@ For each knowledge base in **Admin Panel → Knowledge**:
 
 ## Knowledge Base Setup Guide
 
-Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section provides a pharma-specific knowledge base design.
+Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section provides an example knowledge base design for pharmaceutical contexts.
 
 ### Recommended Knowledge Base Structure
 

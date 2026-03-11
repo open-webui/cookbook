@@ -21,7 +21,7 @@ That's just one of three challenges slowing AI adoption across the legal industr
 
 **Compliance requirements are multiplying.** State bar AI disclosure rules, GDPR for international practices, and internal governance obligations often require auditable, controllable AI infrastructure rather than opaque data handling.
 
-These challenges share a common root: firms need AI they can *control*, *observe*, and *validate* - not just *consume*.
+These challenges share a common root: firms are looking for AI they can *control*, *observe*, and *validate* - not just *consume*.
 
 ---
 
@@ -37,7 +37,7 @@ Self-hosting can provide a level of direct operational control that many SaaS pr
 
 - **Map access controls to how your firm actually works.** Role-based permissions can map to practice groups. Application-level administrators can be restricted from viewing certain conversations, while model access, document access, and feature access are controlled per group.
 
-- **Build auditability into daily use.** When configured as described in our [Technical Setup Guide](setup.md), chat retention controls, configurable logging, SSO integration, and restrictions on chat deletion can support your firm's governance and audit requirements.
+- **Configurable audit and retention controls.** When configured as described in our [Technical Setup Guide](setup.md), chat retention controls, configurable logging, SSO integration, and restrictions on chat deletion can support a firm's governance and audit requirements.
 
 ### Illustrative Example
 
@@ -136,9 +136,8 @@ If your firm wants hands-on support, [Open WebUI Enterprise](https://docs.openwe
 - **White-label branding** - Match the AI interface to your firm's identity
 - **Dedicated support & SLAs** - Direct engineering access for architecture review and incident response
 
-Your data, your infrastructure, your choice of models - with Open WebUI.
 
-*Note: Open WebUI can support legal and compliance workflows, but no software alone establishes legal compliance. Firms should validate controls, policies, and use cases with qualified legal and security teams.*
+*Note: No software alone establishes legal compliance. Firms should validate controls, policies, and use cases with qualified legal and security teams.*
 
 **[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
 

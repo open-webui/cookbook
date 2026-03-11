@@ -43,9 +43,9 @@ Some configuration settings are particularly relevant in environments where data
 
 ### PostgreSQL + PGVector
 
-PostgreSQL serves dual duty: it stores chat history, user records, and configuration (the audit trail), and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
+PostgreSQL serves dual duty: it stores chat history, user records, and configuration, and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
 
-For legal teams, the audit trail matters most. Every conversation is persisted, timestamped, and associated with a user identity. When combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, this creates a record that can support regulatory and internal governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
+Every conversation is persisted, timestamped, and associated with a user identity. When combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, this creates a record that organizations can evaluate against their own governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
 
 ### Redis
 
@@ -73,7 +73,7 @@ Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to 
 
 ### Functions (Optional)
 
-Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/functions/) plugin system enables custom processing logic without external services. Legal-relevant functions include:
+Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/functions/) plugin system enables custom processing logic without external services. Examples include:
 
 - **Rate limiting**: Prevent runaway local LLM usage during bulk document processing
 - **Toxic message filtering**: Content safety guardrails
@@ -83,7 +83,7 @@ Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/fun
 
 ### OpenTelemetry (Optional)
 
-Built-in OpenTelemetry support exports traces, metrics, and logs to your existing observability stack (Prometheus, Grafana, Jaeger, Splunk, Datadog). For firms subject to audit, this provides infrastructure-level visibility into how AI systems are being used and whether they are operating as expected.
+Built-in OpenTelemetry support exports traces, metrics, and logs to your existing observability stack (Prometheus, Grafana, Jaeger, Splunk, Datadog). This provides infrastructure-level visibility into how AI systems are being used.
 
 ---
 
@@ -186,7 +186,7 @@ services:
       - OPENAI_API_KEY=${VLLM_API_KEY:-sk-none}
       - ENABLE_OPENAI_API=True
 
-      # --- Legal-specific security defaults ---
+      # --- Security defaults ---
       - ENABLE_SIGNUP=False
       - DEFAULT_USER_ROLE=pending
       - ENABLE_ADMIN_CHAT_ACCESS=False

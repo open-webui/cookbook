@@ -9,7 +9,7 @@
 
 ---
 
-## The Problem
+## Industry Context
 
 In 2023, Samsung [banned employees from using ChatGPT](https://mashable.com/article/samsung-chatgpt-leak-leads-to-employee-ban) after engineers inadvertently uploaded proprietary source code and internal meeting notes to the service - data that could be stored on external servers and potentially used for model training. Samsung wasn't a pharma company, but the lesson landed hard across the industry: if it can happen with source code, it can happen with compound structures, clinical trial data, and manufacturing processes.
 
@@ -66,7 +66,7 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **R&D / Discovery** | Full | Compound libraries, assay protocols, literature databases | Code interpreter *(run analysis scripts on screening data)* |
 | **Clinical Operations** | Full | Study protocols, CRF templates, monitoring plan libraries | Web search enabled |
 | **Regulatory Affairs** | Full | eCTD templates, FDA/EMA guidance, precedent correspondence | Document extraction *(structured data from regulatory letters)* |
-| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses restricted to validated source documents)* |
+| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses restricted to internal source documents)* |
 | **Manufacturing / CMC** | Full | Batch records, process validation reports, equipment SOPs | File upload enabled |
 | **Medical Affairs** | Full | Product monographs, congress abstracts, KOL slide decks | Web search enabled |
 | **Support Staff** | Basic tasks only | Company policies, HR procedures, training materials | No file upload, no web search |
@@ -121,7 +121,7 @@ flowchart TB
 **Key design decisions:**
 - **Stateless application nodes** - scale out during submission sprints, scale back during quieter periods; lose any single node without service interruption
 - **All inference can run locally** - via Ollama (lightweight models for triage and summarization) and vLLM (large reasoning models for complex scientific analysis); when configured for local-only inference, prompts stay on your network
-- **Unified data layer** - PostgreSQL handles both the audit-trail database and vector search (via PGVector), so there's one system to back up, validate, and secure
+- **Unified data layer** - PostgreSQL handles both the application database and vector search (via PGVector), so there's one system to back up, validate, and secure
 - **Redis session coordination** - enables multi-node deployments where any instance can serve any user seamlessly, critical for organizations operating across time zones
 
 ---

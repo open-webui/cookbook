@@ -9,7 +9,7 @@
 
 ---
 
-## The Problem
+## Industry Context
 
 In 2023, a New York attorney submitted a brief citing six cases fabricated by ChatGPT. [The court sanctioned both the lawyer and his firm.](https://www.courtlistener.com/docket/63107798/54/mata-v-avianca-inc/) Since then, multiple bar associations have issued ethics guidance emphasizing that attorneys should verify AI-generated content, but verification without source traceability is difficult at scale.
 
@@ -31,11 +31,11 @@ There's no shortage of legal AI products on the market - many are polished, well
 
 Self-hosting can provide a level of direct operational control that many SaaS products do not: the ability to inspect and validate how data is handled in your own environment. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - firms should evaluate whether and how these capabilities fit their own compliance and governance requirements:
 
-- **Keep sensitive workflows inside firm-controlled infrastructure.** Open WebUI can run on your infrastructure (on-premise, private cloud, or air-gapped). With the right configuration, firms can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
+- **Run on firm-controlled infrastructure.** Open WebUI can run on your infrastructure (on-premise, private cloud, or air-gapped). With the right configuration, firms can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
 
-- **Ground outputs in your own documents.** Attorneys can query the firm's briefs, precedents, statutes, and internal memos, then receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can significantly improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
+- **Source-grounded responses with citations.** Attorneys can query the firm's briefs, precedents, statutes, and internal memos, then receive responses with inline citations and relevance scores. This does not eliminate hallucination, but it can significantly improve traceability for verification workflows. **All AI-generated content must be reviewed and verified by qualified attorneys before reliance or use in any legal proceeding.**
 
-- **Map access controls to how your firm actually works.** Role-based permissions can map to practice groups. Application-level administrators can be restricted from viewing certain conversations, while model access, document access, and feature access are controlled per group.
+- **Group-based access control.** Role-based permissions can map to practice groups. Application-level administrators can be restricted from viewing certain conversations, while model access, document access, and feature access are controlled per group.
 
 - **Configurable audit and retention controls.** When configured as described in our [Technical Setup Guide](setup.md), chat retention controls, configurable logging, SSO integration, and restrictions on chat deletion can support a firm's governance and audit requirements.
 

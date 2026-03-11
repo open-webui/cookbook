@@ -77,7 +77,7 @@ Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/fun
 
 - **Rate limiting**: Prevent runaway local LLM usage during bulk document processing
 - **Toxic message filtering**: Content safety guardrails
-- **LLM-Guard prompt injection scanning**: Scan for adversarial inputs that might attempt to extract privileged information
+- **LLM-Guard prompt injection scanning**: Scan for adversarial inputs that might attempt to extract sensitive information
 - **Langfuse monitoring**: Detailed usage analytics per user, model, and practice group
 - **Custom RAG functions**: Firm-specific retrieval logic, e.g., prioritizing recent case law or jurisdiction-specific statutes
 

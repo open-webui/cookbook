@@ -1,4 +1,4 @@
-# Private AI for the Pharmaceutical Industry
+# What Would It Take for a Pharma Company to Run AI On Its Own Infrastructure?
 
 *For R&D leaders, CIOs, and digital transformation executives evaluating AI solutions for their organization.*
 
@@ -9,7 +9,7 @@
 
 ---
 
-## Industry Context
+## Why This Question Matters Now
 
 In 2023, Samsung [banned employees from using ChatGPT](https://mashable.com/article/samsung-chatgpt-leak-leads-to-employee-ban) after engineers inadvertently uploaded proprietary source code and internal meeting notes to the service - data that could be stored on external servers and potentially used for model training. Samsung wasn't a pharma company, but the lesson landed hard across the industry: if it can happen with source code, it can happen with compound structures, clinical trial data, and manufacturing processes.
 
@@ -23,23 +23,31 @@ Three specific challenges are slowing AI adoption:
 
 **Scientific hallucinations compound through the pipeline.** When an AI fabricates a drug-drug interaction, misattributes a clinical outcome to the wrong study arm, or cites a retracted paper, the consequences aren't just embarrassing - they can contaminate safety assessments, mislead regulatory reviewers, and delay or derail programs worth hundreds of millions. Scientists need every AI-generated claim traceable to a source document they can verify themselves.
 
-The common thread: many organizations are looking for AI infrastructure they can *deploy inside their own walls*, *validate against their own standards*, and *audit with their own tools*.
+The common thread: some organizations are asking whether AI infrastructure they can *deploy inside their own walls*, *validate against their own standards*, and *audit with their own tools* might be worth exploring.
 
 ---
 
-## Why Some Organizations Are Exploring Self-Hosted AI
+## What Self-Hosted AI Would Need to Provide
 
 The market is full of "AI for life sciences" products - polished, well-funded, and quick to deploy. Most of them work the same way: your data goes to their servers, their models process it, and you get results back. For low-sensitivity use cases like drafting internal emails or summarizing public literature, that model works fine. For anything touching your pipeline, your patients, or your regulators, it creates dependencies you can't fully control.
 
-Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - organizations should evaluate whether and how these capabilities fit their own regulatory, quality, and governance requirements:
+Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. But what would a self-hosted AI platform actually need to provide? Based on the challenges above, the requirements tend to cluster around four areas:
 
-- **Data locality by design.** Open WebUI runs entirely on your infrastructure - on-premise data center, private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
+- **Data locality.** The ability to run entirely on your infrastructure - on-premise data center, private cloud, or air-gapped environment. Models running locally so that when configured for local-only inference, prompts, completions, and embeddings are not sent to external services.
 
-- **Source-grounded responses.** Scientists query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation links back to the original document. This can reduce hallucination risk and make claims more verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
+- **Source-grounded responses.** The ability for scientists to query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation linking back to the original document. This can reduce hallucination risk and make claims more verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
 
-- **Configurable access control.** Permissions can map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it, which can help reduce unintended cross-group data exposure. IT administrators can manage the platform without viewing the content of user conversations.
+- **Configurable access control.** The ability to map permissions to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group seeing only the models, documents, and capabilities assigned to it. IT administrators able to manage the platform without viewing the content of user conversations.
 
-- **Configurable audit and retention controls.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), the application disables chat deletion and temporary chats at the application level. Combined with SSO integration, this provides technical controls that organizations can evaluate for their electronic record-keeping requirements.
+- **Configurable audit and retention controls.** Every conversation timestamped, attributed to an authenticated user, and retained according to your policy. Chat deletion and temporary chats disabled at the application level. Combined with SSO integration, these controls can be evaluated for electronic record-keeping requirements.
+
+These aren't unique to any one product - they're the criteria that organizations exploring self-hosted AI tend to evaluate against.
+
+---
+
+## One Approach: Open-Source Self-Hosting
+
+[Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. It's one example of a platform that can be configured to address the requirements above - organizations should evaluate whether and how its capabilities fit their own regulatory, quality, and governance requirements.
 
 ### Illustrative Example
 
@@ -54,7 +62,7 @@ Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a spe
 
 ---
 
-## Access Control for Functional Groups
+## What Access Control Could Look Like
 
 Open WebUI includes a group-based access control system. The table below shows one example of how an organization might map functional groups to AI capabilities. **This is an illustrative configuration - organizations should design their own group structure based on their specific functional areas, risk profile, and governance requirements.**
 
@@ -75,11 +83,11 @@ Groups synchronize with your identity provider (Okta, Azure AD, Ping Identity) v
 
 ---
 
-## What a Production Deployment Looks Like
+## What Infrastructure Is Involved
 
-*This section is a reference for your IT or infrastructure team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it can deploy on your existing infrastructure (VMware, Azure, AWS, or bare metal), scale horizontally, and can operate without external dependencies once models are loaded.*
+*This section is a reference for your IT or infrastructure team. If you're evaluating at a strategic level, the key takeaway is: a self-hosted AI platform can deploy on existing infrastructure (VMware, Azure, AWS, or bare metal), scale horizontally, and can operate without external dependencies once models are loaded.*
 
-For large pharma organizations (500-10,000+ employees), a production deployment typically requires high availability and data isolation. Here's a reference architecture - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
+For large pharma organizations (500-10,000+ employees), a production deployment typically requires high availability and data isolation. Here's a reference architecture using Open WebUI - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
 ```mermaid
 flowchart TB
@@ -126,22 +134,20 @@ flowchart TB
 
 ---
 
-## Get Started
+## Considerations Before Getting Started
 
-Open WebUI is **free to use**. Infrastructure costs depend on your organization's scale - a single-department pilot can run on one GPU server in your existing environment, while the full production architecture above involves dedicated compute and storage. A pilot can typically be running within hours; a full production rollout typically takes a few weeks.
+Self-hosting AI is not trivial. Before committing, organizations should consider:
 
-The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
+- **Infrastructure costs.** Open WebUI itself is free, but GPU servers, storage, and networking are not. A single-department pilot can run on one GPU server in your existing environment; a full production deployment involves dedicated compute and storage.
+- **Validation effort.** If AI is used in GxP-adjacent workflows, the platform will likely need to go through your Computer System Validation process. This is an organizational responsibility, not something the software provides out of the box.
+- **Governance design.** Who approves AI use cases? How are outputs reviewed? What's the policy for AI-assisted content in submissions? These questions matter more than the technology.
+- **Ongoing maintenance.** Model updates, security patches, user support, and knowledge base curation are ongoing responsibilities. A pilot can typically be running within hours; a full production rollout typically takes a few weeks.
+
+For organizations that want to explore the technical details, the complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion guide:
 
 **[Technical Setup Guide →](setup.md)**
 
-### Enterprise Support
-
-If your organization wants hands-on deployment support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
-
-- **Regulatory alignment guidance** - Guidance on deploying Open WebUI in alignment with frameworks including 21 CFR Part 11, Annex 11, HIPAA, SOC 2, and ISO 27001 *(compliance determination remains your organization's responsibility)*
-- **White-label branding** - Match the AI interface to your corporate identity
-- **Dedicated support & SLAs** - Direct engineering access for architecture review and incident response
-
+For organizations that want deployment guidance, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) offers hands-on support including regulatory alignment guidance *(compliance determination remains your organization's responsibility)*, white-label branding, and dedicated SLAs.
 
 **[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
 

@@ -1,6 +1,6 @@
 # Technical Setup Guide
 
-This guide is a technical reference companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
+This guide is a technical reference companion to [What Would It Take for a Pharma Company to Run AI On Its Own Infrastructure?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -950,4 +950,4 @@ For mission-critical deployments, enable PostgreSQL WAL archiving for point-in-t
 
 ---
 
-*This guide is maintained alongside the [Private AI for the Pharmaceutical Industry with Open WebUI](article.md) blog post. For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*
+*This guide is maintained alongside [What Would It Take for a Pharma Company to Run AI On Its Own Infrastructure?](article.md). For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*

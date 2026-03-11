@@ -1,6 +1,6 @@
 # Pharmaceutical Industry - Technical Setup Guide
 
-This guide is the engineering companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It covers the production deployment, configuration for GxP-relevant environments, and pharma-specific RBAC and knowledge base design.
+This guide is a technical reference companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -11,7 +11,7 @@ This guide is the engineering companion to [Private AI for the Pharmaceutical In
 3. [Docker Compose Reference](#docker-compose-reference)
 4. [Setup Script](#setup-script)
 5. [Environment Variable Reference](#environment-variable-reference)
-6. [GxP Alignment Guide](#gxp-alignment-guide)
+6. [GxP Alignment - Informational Reference](#gxp-alignment---informational-reference)
 7. [RBAC Configuration Guide](#rbac-configuration-guide)
 8. [Knowledge Base Setup Guide](#knowledge-base-setup-guide)
 9. [Security Hardening Checklist](#security-hardening-checklist)
@@ -23,13 +23,13 @@ This guide is the engineering companion to [Private AI for the Pharmaceutical In
 
 The production stack is identical to any Open WebUI enterprise deployment: reverse proxy with TLS, stateless application nodes, PostgreSQL + PGVector for data and vector search, Redis for session coordination, and local inference via Ollama and vLLM. See the [blog post](article.md) for the architecture diagram and rationale.
 
-What makes the pharma deployment different isn't the infrastructure - it's the **configuration layer on top**: how you lock down access, structure knowledge bases around functional groups, and produce the audit trail that GxP demands. That's what this guide focuses on.
+What makes this configuration different from a generic deployment isn't the infrastructure - it's the **configuration layer on top**: how access is structured, how knowledge bases map to functional groups, and how audit records are retained. The settings below are examples of how organizations in regulated industries have approached these decisions.
 
-**Key pharma-specific configuration decisions:**
+**Example configuration decisions:**
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` - IT manages the platform without ever seeing the content of scientific conversations. This helps protect proprietary compound data and pre-competitive research.
-- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates a persistent, timestamped electronic record of every AI interaction, providing the application-level controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
-- `ENABLE_COMMUNITY_SHARING=False` - No data, prompts, or model configurations are shared externally.
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content. This helps protect proprietary compound data and pre-competitive research.
+- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates a persistent, timestamped electronic record of every AI interaction at the application level.
+- `ENABLE_COMMUNITY_SHARING=False` - Disables sharing of data, prompts, or model configurations externally.
 - `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. This helps prevent cross-group data exposure.
 
 ---
@@ -598,18 +598,18 @@ echo "==========================================================================
 
 ## Environment Variable Reference
 
-These are the same Open WebUI environment variables used in any deployment. This section highlights the ones with pharma-specific rationale - for the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
+These are the same Open WebUI environment variables used in any deployment. This section highlights the ones that organizations in regulated industries have found relevant. **These descriptions explain what each setting does - they do not constitute compliance guidance.** For the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
 
-### Audit Trail & Data Integrity (Technical Controls for 21 CFR Part 11)
+### Audit Trail & Data Integrity
 
-> **Note:** These mappings describe the technical controls Open WebUI provides. They do not constitute a compliance determination. Your organization's quality team must validate these controls as part of your own Computer System Validation (CSV) process.
+> **Note:** These descriptions explain the technical behavior of each setting. They do not constitute a compliance determination. Your organization's quality team must evaluate these controls as part of your own Computer System Validation (CSV) process.
 
-| Variable | Value | Technical Control Provided |
+| Variable | Value | What This Setting Does |
 |---|---|---|
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) - Audit trail.** Prevents deletion of conversation records at the application level, supporting a complete conversation history. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **Relevant to §11.10(e) - Audit trail.** Disables temporary chats, ensuring every AI interaction is recorded. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Relevant to §11.10(d) - Limiting access.** IT administrators manage the system without viewing scientific content. |
-| `ENABLE_ADMIN_EXPORT` | `False` | **Relevant to §11.10(d) - Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables deletion of conversation records at the application level. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary chats, so every AI interaction is recorded. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content. |
+| `ENABLE_ADMIN_EXPORT` | `False` | Disables bulk extraction of conversation records at the application level. |
 
 ### Access Control
 
@@ -642,7 +642,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 ---
 
-## GxP Alignment Guide
+## GxP Alignment - Informational Reference
 
 > [!IMPORTANT]
 > **Open WebUI is a general-purpose AI platform. It is not a validated GxP system, and nothing in this guide should be interpreted as a compliance determination.** When deployed with the configuration described here, Open WebUI provides technical controls that your organization's quality team can evaluate as part of their own Computer System Validation (CSV) effort. The mappings below are informational - your validation team must independently verify that each control meets your regulatory obligations.
@@ -669,7 +669,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 | **Data migration** | PostgreSQL `pg_dump`/`pg_restore` with integrity verification. Standard, well-documented process. |
 | **Business continuity** | Stateless nodes with automatic failover, Redis HA, PostgreSQL WAL archiving for point-in-time recovery. |
 
-### What This Means for Your Validation Team
+### What This Might Mean for a Validation Team
 
 If your organization uses a risk-based approach to CSV (Computer System Validation), Open WebUI may be considered for classification as **GAMP Category 4** (configured software), though the final determination depends on your specific deployment, customizations, and use case. A typical validation effort focuses on:
 
@@ -683,7 +683,7 @@ Open WebUI's open-source codebase, deterministic container deployment, and compr
 
 ## RBAC Configuration Guide
 
-After first deployment, configure functional groups via the Admin Panel.
+After first deployment, you can configure functional groups via the Admin Panel. The following is an example workflow - **your organization should design its own group structure based on its functional areas, risk profile, and governance requirements.**
 
 ### Step 1: Configure OAuth / SSO
 
@@ -828,7 +828,7 @@ For higher-quality embeddings (recommended for 10,000+ document deployments), co
 
 ## Security Hardening Checklist
 
-Use this checklist before going to production. Items are organized by security domain; those marked with a regulatory reference relate to common GxP or data protection considerations.
+The following checklist describes operational security measures. **This is not a compliance checklist - your organization's quality, security, and compliance teams should determine which items apply to your environment and what additional measures are needed.**
 
 ### Network Layer
 

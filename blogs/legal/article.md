@@ -25,11 +25,11 @@ These challenges share a common root: firms need AI they can *control*, *observe
 
 ---
 
-## What a Legal AI Platform Needs
+## Why Some Firms Are Looking at Self-Hosted AI
 
-There's no shortage of legal AI products on the market - many are polished, well-funded, and easy to adopt. The strategic question is control: where data is processed, who can access it, and how confidently you can prove that to clients, courts, and regulators. For routine work with low-sensitivity data, shared infrastructure may be a reasonable tradeoff. For firms handling privileged litigation, regulatory investigations, or M&A due diligence, tighter control is often worth it.
+There's no shortage of legal AI products on the market - many are polished, well-funded, and easy to adopt. The strategic question is control: where data is processed, who can access it, and how confidently you can prove that to clients, courts, and regulators. For routine work with low-sensitivity data, shared infrastructure may be a reasonable tradeoff. For firms handling privileged litigation, regulatory investigations, or M&A due diligence, tighter control is often worth evaluating.
 
-Self-hosting can provide a level of direct operational control that many SaaS products do not: the ability to inspect and validate how data is handled in your own environment. Here's what that looks like in practice, and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, supports it:
+Self-hosting can provide a level of direct operational control that many SaaS products do not: the ability to inspect and validate how data is handled in your own environment. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - firms should evaluate whether and how these capabilities fit their own compliance and governance requirements:
 
 - **Keep sensitive workflows inside firm-controlled infrastructure.** Open WebUI can run on your infrastructure (on-premise, private cloud, or air-gapped). With the right configuration, firms can reduce third-party data exposure, limit model training risk, and avoid external API calls for inference.
 
@@ -39,7 +39,9 @@ Self-hosting can provide a level of direct operational control that many SaaS pr
 
 - **Build auditability into daily use.** When configured as described in our [Technical Setup Guide](setup.md), chat retention controls, configurable logging, SSO integration, and restrictions on chat deletion can support your firm's governance and audit requirements.
 
-### What This Looks Like in Practice
+### Illustrative Example
+
+> **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Firms must design, test, and validate their own AI workflows according to their governance requirements.
 
 When configured with a firm's internal document library, an associate preparing a motion types a question into Open WebUI. The response can draw from the firm's briefs and cite the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The conversation can be logged under their user account for search and audit workflows. In deployments configured for internal-only processing, data can remain on firm-controlled systems.
 
@@ -51,7 +53,7 @@ For a partner reviewing the associate's work, the audit trail can show which AI-
 
 ## Access Control for Practice Groups
 
-Open WebUI's group system maps naturally to law firm organizational structures. Each practice group gets tailored permissions:
+Open WebUI includes a group-based access control system. The table below shows one example of how a firm might map practice groups to AI capabilities. **This is an illustrative configuration - firms should design their own group structure based on their specific needs, risk tolerance, and governance requirements.**
 
 ![Admin panel showing practice group configuration](images/admin_groups.png)
 
@@ -71,7 +73,7 @@ Groups can synchronize with your identity provider (Okta, Azure AD, Google Works
 
 *This section is a reference for your IT or engineering team. If you're evaluating Open WebUI at a strategic level, the key takeaway is simple: it can run on your existing infrastructure (VMware, Azure, AWS, or bare metal), scale with your firm, and be deployed with minimal external dependencies.*
 
-For large firms (200–1,000+ attorneys), a production deployment needs high availability, data isolation, and compliance-ready infrastructure. Here's the reference architecture - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
+For large firms (200-1,000+ attorneys), a production deployment typically requires high availability and data isolation. Here's a reference architecture - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
 ```mermaid
 flowchart TB

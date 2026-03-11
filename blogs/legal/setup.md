@@ -1,6 +1,6 @@
 # Legal Industry - Technical Setup Guide
 
-This guide is the engineering companion to [Private AI for the Legal Industry with Open WebUI](article.md). It provides everything your engineering or IT team needs to deploy, configure, and operate the production architecture described there.
+This guide is a technical reference companion to [Private AI for the Legal Industry with Open WebUI](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your firm's engineering, security, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -34,12 +34,12 @@ Open WebUI instances run as stateless containers. This means you can:
 - Lose any single node without service interruption
 - Restart containers without losing data - all persistent state lives in PostgreSQL and Redis
 
-Key environment variables for this deployment pattern:
+Some configuration settings are particularly relevant in environments where data sensitivity and access control matter. Here are examples worth considering:
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` - Supports attorney-client privilege protection by restricting IT administrators from viewing conversation content. *(Self-hosting and this setting support privilege protection efforts; firms should consult ethics counsel on their specific obligations.)*
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content. *(Firms evaluating this for privilege protection should consult ethics counsel on their specific obligations.)*
 - `ENABLE_SIGNUP=False` - No self-registration; user provisioning is controlled
 - `DEFAULT_USER_ROLE=pending` - New accounts require admin approval before accessing any AI capabilities
-- `ENABLE_ADMIN_EXPORT=False` - Prevents bulk data extraction
+- `ENABLE_ADMIN_EXPORT=False` - Disables bulk data extraction at the application level
 
 ### PostgreSQL + PGVector
 
@@ -651,21 +651,21 @@ echo "==========================================================================
 
 ## Environment Variable Reference
 
-The Docker Compose file above includes the most important variables for a legal deployment. This section explains the legal-specific rationale for each configuration choice.
+The Docker Compose file above includes the most important variables for this deployment pattern. This section explains the rationale for each configuration choice. **These descriptions explain what each setting does - they do not constitute compliance guidance. Your firm's security and compliance teams should determine which settings are appropriate for your environment.**
 
 ### Security & Access Control
 
 | Variable | Value | Why |
 |---|---|---|
-| `ENABLE_SIGNUP` | `False` | Prevents unauthorized accounts. All users are provisioned by an admin or synced via SSO. |
+| `ENABLE_SIGNUP` | `False` | Disables self-registration. All users are provisioned by an admin or synced via SSO. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users land in a "pending" state until an admin explicitly approves them. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Supports privilege protection.** Restricts IT administrators from viewing attorney-client conversations. *(This setting supports privilege protection but does not alone establish or guarantee privilege; consult ethics counsel.)* |
-| `ENABLE_ADMIN_EXPORT` | `False` | Prevents bulk database exports that could expose privileged material. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content. *(Firms evaluating this for privilege-related purposes should consult ethics counsel.)* |
+| `ENABLE_ADMIN_EXPORT` | `False` | Disables bulk database exports at the application level. |
 | `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | Disables sharing prompts/models to the Open WebUI Community hub. |
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Audit trail.** Users cannot delete chat history at the application level, preserving the full conversation record. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Prevents users from creating temporary (unlogged) chats that could bypass audit trail controls. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables chat deletion at the application level, preserving the full conversation record. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary (unlogged) chats. |
 
 ### RAG Configuration
 
@@ -704,7 +704,7 @@ appendonly yes      # AOF persistence for durability
 
 ## RBAC Configuration Guide
 
-After first deployment, configure practice groups via the Admin Panel. This section provides the step-by-step workflow.
+After first deployment, you can configure groups via the Admin Panel. The following is an example workflow - **your firm should design its own group structure based on its practice areas, risk profile, and governance requirements.**
 
 ### Step 1: Configure OAuth / SSO
 
@@ -824,7 +824,7 @@ For higher-quality embeddings (recommended for 10,000+ document deployments), co
 
 ## Security Hardening Checklist
 
-Use this checklist before going to production. Items are organized by security domain and relate to common legal and compliance considerations.
+The following checklist describes operational security measures. **This is not a compliance checklist - your firm's security and compliance teams should determine which items apply to your environment and what additional measures are needed.**
 
 ### Network Layer
 

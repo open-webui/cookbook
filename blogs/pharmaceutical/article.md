@@ -27,11 +27,11 @@ The common thread: pharma needs AI infrastructure it can *deploy inside its own 
 
 ---
 
-## What a Pharma AI Platform Needs
+## Why Some Organizations Are Exploring Self-Hosted AI
 
 The market is full of "AI for life sciences" products - polished, well-funded, and quick to deploy. Most of them work the same way: your data goes to their servers, their models process it, and you get results back. For low-sensitivity use cases like drafting internal emails or summarizing public literature, that model works fine. For anything touching your pipeline, your patients, or your regulators, it creates dependencies you can't fully control.
 
-Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. Here's what that looks like concretely - and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, delivers it:
+Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - organizations should evaluate whether and how these capabilities fit their own regulatory, quality, and governance requirements:
 
 - **Designed to keep all data on your infrastructure.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
 
@@ -41,13 +41,13 @@ Self-hosting changes the equation. Instead of trusting vendor claims about data 
 
 - **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), the application prevents users from deleting conversations or creating unlogged sessions. Combined with SSO integration, this provides the technical controls needed to support your organization's electronic record-keeping requirements.
 
-### What This Looks Like in Practice
+### Illustrative Example
+
+> **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a tool that can support these workflows - it does not replace them.
 
 A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI and queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response pulls from three internal clinical study reports, cites each by document name with relevance scores, and structures the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF, reviews and edits the content according to her organization's quality procedures, and obtains the required sign-offs before including any AI-assisted content in the submission. The entire exchange is logged under her SSO identity.
 
 Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a specific claim in the summary was generated. The QA team pulls up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp - all attributable to a named user, all retained on company-controlled infrastructure.
-
-> **Note:** This scenario is illustrative. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a tool that supports these workflows - it does not replace them.
 
 <!-- TODO: Replace with real screenshot of chat UI showing inline citations and source panel -->
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
@@ -56,7 +56,7 @@ Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a spe
 
 ## Access Control for Functional Groups
 
-Pharma organizations don't have one relationship with AI - they have many. A medicinal chemist analyzing SAR data has different needs and risk tolerances than a pharmacovigilance officer reviewing safety signals. Open WebUI's group system lets you configure each function independently:
+Open WebUI includes a group-based access control system. The table below shows one example of how an organization might map functional groups to AI capabilities. **This is an illustrative configuration - organizations should design their own group structure based on their specific functional areas, risk profile, and governance requirements.**
 
 <!-- TODO: Replace with screenshot of Admin Panel → Groups showing functional groups -->
 ![Admin panel showing functional group configuration](images/admin_groups.png)
@@ -77,9 +77,9 @@ Groups synchronize with your identity provider (Okta, Azure AD, Ping Identity) v
 
 ## What a Production Deployment Looks Like
 
-*This section is a reference for your IT or infrastructure team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it deploys on your existing infrastructure (VMware, Azure, AWS, or bare metal), scales horizontally, and can operate without external dependencies once models are loaded.*
+*This section is a reference for your IT or infrastructure team. If you're evaluating Open WebUI at a strategic level, the key takeaway is: it can deploy on your existing infrastructure (VMware, Azure, AWS, or bare metal), scale horizontally, and can operate without external dependencies once models are loaded.*
 
-For large pharma organizations (500–10,000+ employees), a production deployment needs high availability, data isolation, and GxP-ready infrastructure. Here's the reference architecture - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
+For large pharma organizations (500-10,000+ employees), a production deployment typically requires high availability and data isolation. Here's a reference architecture - for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
 ```mermaid
 flowchart TB

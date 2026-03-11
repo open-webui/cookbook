@@ -1,4 +1,4 @@
-# Pharmaceutical Industry - Technical Setup Guide
+# Technical Setup Guide
 
 This guide is a technical reference companion to [Private AI for the Pharmaceutical Industry with Open WebUI](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your organization's engineering, quality, and compliance teams should adapt this architecture to your specific requirements.**
 
@@ -434,7 +434,7 @@ Save this as `setup.sh` and run it before your first `docker compose up`:
 ```bash
 #!/usr/bin/env bash
 # =============================================================================
-# Open WebUI - Pharma Industry Setup Script
+# Open WebUI - Production Setup Script
 # =============================================================================
 # This script creates the required directory structure, generates secrets,
 # pulls initial models, and validates the environment before first boot.
@@ -492,7 +492,7 @@ generate_secret() {
 if [ ! -f .env ]; then
     cat > .env << EOF
 # =============================================================================
-# Open WebUI - Pharma Industry Environment Configuration
+# Open WebUI - Environment Configuration
 # Generated on $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # =============================================================================
 
@@ -734,7 +734,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
    - Models: Reasoning models only (e.g., Llama 3.1 70B via vLLM)
    - Knowledge bases: MedDRA dictionaries, CIOMS forms, signal detection SOPs
    - Permissions: RAG-only mode (no web search, no file upload)
-   - *Rationale: PV work is safety-critical. Restricting to RAG-only mode limits responses to content drawn from validated internal documents, reducing exposure to uncontrolled external content.*
+    - *Rationale: PV work is safety-critical. Restricting to RAG-only mode limits responses to content drawn from curated internal documents, reducing exposure to uncontrolled external content.*
 
 5. **Manufacturing / CMC**
    - Models: All available models
@@ -791,7 +791,7 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 | `CRF Templates` | Case report forms, data management plans, reconciliation guides | Clinical Operations | |
 | `Regulatory Guidance` | FDA guidance library, EMA guidelines, ICH harmonized guidelines | Regulatory Affairs | *Consider splitting by region (FDA/EMA/PMDA)* |
 | `Submission Templates` | eCTD module templates, cover letters, precedent review correspondence | Regulatory Affairs | |
-| `PV Reference` | MedDRA hierarchy, CIOMS forms, signal detection SOPs, PSUR templates | Pharmacovigilance | *Validated documents only - no drafts* |
+| `PV Reference` | MedDRA hierarchy, CIOMS forms, signal detection SOPs, PSUR templates | Pharmacovigilance | *Reviewed documents only - no drafts* |
 | `Manufacturing SOPs` | Batch records, process validation reports, equipment qualification docs | Manufacturing / CMC | |
 | `Medical Information` | Product monographs, SmPCs, congress posters, medical response letters | Medical Affairs | |
 | `Company Policies` | HR handbook, compliance policies, IT security procedures, training guides | All groups | |
@@ -810,7 +810,7 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
    - Generates vector embeddings and stores them in PGVector
 5. Users in the assigned groups can now reference this knowledge base in chat by typing `#` followed by the knowledge base name
 
-### RAG Best Practices for Pharma Documents
+### RAG Best Practices
 
 - **Regulatory submissions**: Large eCTD modules should be split by section (e.g., upload Module 2.5 Quality Overall Summary separately from Module 3.2.P Drug Product). This improves retrieval precision significantly.
 - **SOPs and batch records**: These are typically well-structured documents that RAG handles effectively. Use descriptive filenames that include the SOP number and revision (e.g., `SOP-MFG-042-Rev3-Tablet-Compression.pdf`).
@@ -946,7 +946,7 @@ echo "[INFO] Backup complete. Size: $(du -h "${BACKUP_FILE}" | cut -f1)"
 | Full infrastructure loss | ≤ 24 hours | 2–4 hours (restore from backups) |
 | With WAL archiving | ≤ 5 minutes | < 1 hour |
 
-For GxP-critical deployments, enable PostgreSQL WAL archiving for point-in-time recovery with an RPO of minutes rather than hours.
+For mission-critical deployments, enable PostgreSQL WAL archiving for point-in-time recovery with an RPO of minutes rather than hours.
 
 ---
 

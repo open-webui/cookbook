@@ -126,7 +126,7 @@ Open WebUI is **free to use**. Infrastructure costs depend on your firm's scale:
 
 The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
 
-**[Legal Industry Technical Setup Guide →](setup.md)**
+**[Technical Setup Guide →](setup.md)**
 
 ### Enterprise Support
 

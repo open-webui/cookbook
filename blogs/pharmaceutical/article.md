@@ -33,7 +33,7 @@ The market is full of "AI for life sciences" products - polished, well-funded, a
 
 Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. [Open WebUI](https://docs.openwebui.com/) is a general-purpose, open-source AI platform that can be self-hosted. The capabilities below describe what self-hosting with a platform like Open WebUI makes possible - organizations should evaluate whether and how these capabilities fit their own regulatory, quality, and governance requirements:
 
-- **Data locality by design.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
+- **Data locality by design.** Open WebUI runs entirely on your infrastructure - on-premise data center, private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
 
 - **Source-grounded responses.** Scientists query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation links back to the original document. This can reduce hallucination risk and make claims more verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
 
@@ -132,7 +132,7 @@ Open WebUI is **free to use**. Infrastructure costs depend on your organization'
 
 The complete Docker Compose stack, security hardening checklist, RBAC configuration guide, and backup strategy are in our companion technical guide:
 
-**[Pharma Industry Technical Setup Guide →](setup.md)**
+**[Technical Setup Guide →](setup.md)**
 
 ### Enterprise Support
 

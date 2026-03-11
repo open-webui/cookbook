@@ -1,4 +1,4 @@
-# Legal Industry - Technical Setup Guide
+# Technical Setup Guide
 
 This guide is a technical reference companion to [Private AI for the Legal Industry with Open WebUI](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries have found relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your firm's engineering, security, and compliance teams should adapt this architecture to your specific requirements.**
 
@@ -487,7 +487,7 @@ Save this as `setup.sh` and run it before your first `docker compose up`:
 ```bash
 #!/usr/bin/env bash
 # =============================================================================
-# Open WebUI - Legal Industry Setup Script
+# Open WebUI - Production Setup Script
 # =============================================================================
 # This script creates the required directory structure, generates secrets,
 # pulls initial models, and validates the environment before first boot.
@@ -545,7 +545,7 @@ generate_secret() {
 if [ ! -f .env ]; then
     cat > .env << EOF
 # =============================================================================
-# Open WebUI - Legal Industry Environment Configuration
+# Open WebUI - Environment Configuration
 # Generated on $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # =============================================================================
 

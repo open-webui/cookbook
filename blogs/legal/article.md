@@ -51,7 +51,7 @@ These aren't unique to any one product - they're the criteria that firms explori
 
 > **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Firms must design, test, and validate their own AI workflows according to their governance requirements.
 
-When configured with a firm's internal document library, an associate preparing a motion types a question into Open WebUI. The response can draw from the firm's briefs and cite the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The conversation can be logged under their user account for search and audit workflows. In deployments configured for internal-only processing, data can remain on firm-controlled systems.
+When configured with a firm's internal document library, an associate preparing a motion types a question into Open WebUI. The response can draw from the firm's briefs and cite the specific documents used, with relevance scores for each source. The associate clicks through to verify each citation against the original. The conversation can be logged under their user account for search and audit workflows. When the deployment is configured to avoid external connections, data can remain on firm-controlled systems.
 
 For a partner reviewing the associate's work, the audit trail can show which AI-generated content was used, what sources it was grounded in, and when. That level of traceability is increasingly emphasized in ethics guidance and internal AI governance.
 
@@ -70,7 +70,7 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **Litigation** | Full | Case law, motions, discovery templates | Web search enabled |
 | **Corporate / M&A** | Full | Deal templates, regulatory filings, due diligence checklists | Document extraction *(extract structured data from contracts and filings)* |
 | **Intellectual Property** | Full | Patent databases, prosecution templates | Code interpreter *(run analysis scripts on patent claim data)* |
-| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses grounded in firm documents only)* |
+| **Tax** | Advanced analysis only | Tax code, IRS guidance, firm tax opinions | RAG-only mode *(responses grounded in firm documents)* |
 | **Paralegals / Staff** | Basic tasks only | Firm procedures, HR policies | No file upload, no web search |
 
 Groups can synchronize with your identity provider (Okta, Azure AD, Google Workspace) via OAuth, so practice group membership can stay aligned with your firm's directory.

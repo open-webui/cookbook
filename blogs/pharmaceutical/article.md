@@ -39,7 +39,7 @@ Self-hosting changes the equation. Instead of trusting vendor claims about data 
 
 - **Configurable access control.** The ability to map permissions to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group seeing only the models, documents, and capabilities assigned to it. IT administrators able to manage the platform without viewing the content of user conversations.
 
-- **Configurable audit and retention controls.** Every conversation timestamped, attributed to an authenticated user, and retained according to your policy. Chat deletion and temporary chats disabled at the application level. Combined with SSO integration, these controls can be evaluated for electronic record-keeping requirements.
+- **Configurable audit and retention controls.** The ability to timestamp and attribute every conversation to an authenticated user, retain conversations according to your policy, and disable chat deletion and temporary chats at the application level. Combined with SSO integration, these controls can be evaluated for electronic record-keeping requirements.
 
 These aren't unique to any one product - they're the criteria that organizations exploring self-hosted AI tend to evaluate against.
 
@@ -53,9 +53,9 @@ These aren't unique to any one product - they're the criteria that organizations
 
 > **Note:** The following scenario is illustrative and does not represent a validated or endorsed workflow. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a general-purpose tool - it does not replace these processes.
 
-A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI and queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response pulls from three internal clinical study reports, cites each by document name with relevance scores, and structures the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF, reviews and edits the content according to her organization's quality procedures, and obtains the required sign-offs before including any AI-assisted content in the submission. The entire exchange is logged under her SSO identity.
+A scientist queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our internal studies for compound X, including the statistical methods used."* The response pulls from internal study reports and cites each by document name with relevance scores. She clicks each citation to verify it against the source PDF, reviews and edits the content according to her organization's quality procedures, and obtains the required sign-offs before using any AI-assisted content. The entire exchange is logged under her SSO identity.
 
-Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a specific claim in the summary was generated. The QA team pulls up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp - all attributable to a named user, all retained on company-controlled infrastructure.
+Later, when a question arises about how a specific claim was drafted, the team can review the conversation log: the query, the AI response, the source documents cited, and the timestamp - attributable to a named user and retained on company-controlled infrastructure when configured for local-only operation.
 
 <!-- TODO: Replace with real screenshot of chat UI showing inline citations and source panel -->
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
@@ -74,7 +74,7 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **R&D / Discovery** | Full | Compound libraries, assay protocols, literature databases | Code interpreter *(run analysis scripts on screening data)* |
 | **Clinical Operations** | Full | Study protocols, CRF templates, monitoring plan libraries | Web search enabled |
 | **Regulatory Affairs** | Full | eCTD templates, FDA/EMA guidance, precedent correspondence | Document extraction *(structured data from regulatory letters)* |
-| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses grounded in internal source documents only)* |
+| **Pharmacovigilance** | Advanced analysis only | MedDRA dictionaries, CIOMS forms, signal detection SOPs | RAG-only mode *(responses grounded in internal source documents)* |
 | **Manufacturing / CMC** | Full | Batch records, process validation reports, equipment SOPs | File upload enabled |
 | **Medical Affairs** | Full | Product monographs, congress abstracts, KOL slide decks | Web search enabled |
 | **Support Staff** | Basic tasks only | Company policies, HR procedures, training materials | No file upload, no web search |
@@ -127,7 +127,7 @@ flowchart TB
 ```
 
 **Key design decisions:**
-- **Stateless application nodes** - scale out during submission sprints, scale back during quieter periods; lose any single node without service interruption
+- **Stateless application nodes** - scale out during demand spikes, scale back during quieter periods; lose any single node without service interruption
 - **All inference can run locally** - via Ollama (lightweight models for triage and summarization) and vLLM (large reasoning models for complex scientific analysis); when configured for local-only inference, prompts stay on your network
 - **Unified data layer** - PostgreSQL handles both the application database and vector search (via PGVector), so there's one system to back up, validate, and secure
 - **Redis session coordination** - enables multi-node deployments where any instance can serve any user seamlessly, critical for organizations operating across time zones

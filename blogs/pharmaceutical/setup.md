@@ -28,7 +28,7 @@ What makes the pharma deployment different isn't the infrastructure — it's the
 **Key pharma-specific configuration decisions:**
 
 - `ENABLE_ADMIN_CHAT_ACCESS=False` — IT manages the platform without ever seeing the content of scientific conversations. This protects proprietary compound data and pre-competitive research.
-- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` — Creates an immutable, timestamped electronic record of every AI interaction, supporting 21 CFR Part 11 audit trail requirements.
+- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` — Creates an immutable, timestamped electronic record of every AI interaction, providing the technical controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
 - `ENABLE_COMMUNITY_SHARING=False` — No data, prompts, or model configurations are shared externally.
 - `BYPASS_MODEL_ACCESS_CONTROL=False` — Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. No cross-contamination.
 
@@ -103,7 +103,7 @@ services:
   # Open WebUI — Stateless application nodes
   # ---------------------------------------------------------------------------
   open-webui-1:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for GxP environments
     container_name: owui-node-1
     restart: unless-stopped
     environment:
@@ -186,7 +186,7 @@ services:
   # Docker Compose list-style environment blocks do not support YAML merge keys.
   # If you add or change a variable above, update it here as well.
   open-webui-2:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for GxP environments
     container_name: owui-node-2
     restart: unless-stopped
     environment:
@@ -600,14 +600,16 @@ echo "==========================================================================
 
 These are the same Open WebUI environment variables used in any deployment. This section highlights the ones with pharma-specific rationale — for the full reference, see the [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration/).
 
-### Audit Trail & Data Integrity (21 CFR Part 11 alignment)
+### Audit Trail & Data Integrity (Technical Controls for 21 CFR Part 11)
 
-| Variable | Value | Regulatory Rationale |
+> **Note:** These mappings describe the technical controls Open WebUI provides. They do not constitute a compliance determination. Your organization's quality team must validate these controls as part of your own Computer System Validation (CSV) process.
+
+| Variable | Value | Technical Control Provided |
 |---|---|---|
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **§11.10(e) — Audit trail.** Electronic records must be retained. Preventing deletion ensures a complete, tamper-evident conversation history. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **§11.10(e) — Audit trail.** Temporary chats bypass logging. Disabling them ensures every AI interaction is recorded. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **§11.10(d) — Limiting access.** Restricts system access to authorized individuals. IT administrators manage the system without viewing scientific content. |
-| `ENABLE_ADMIN_EXPORT` | `False` | **§11.10(d) — Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Relevant to §11.10(e) — Audit trail.** Prevents deletion of conversation records, supporting a complete, tamper-evident conversation history. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | **Relevant to §11.10(e) — Audit trail.** Disables temporary chats, ensuring every AI interaction is recorded. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Relevant to §11.10(d) — Limiting access.** IT administrators manage the system without viewing scientific content. |
+| `ENABLE_ADMIN_EXPORT` | `False` | **Relevant to §11.10(d) — Limiting access.** Prevents bulk extraction of conversation records outside controlled export procedures. |
 
 ### Access Control
 
@@ -642,31 +644,34 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 ## GxP Alignment Guide
 
-Open WebUI is a general-purpose AI platform, not a pre-validated GxP system. However, when deployed with the configuration in this guide, it provides the technical controls that a GxP validation effort requires. This section maps Open WebUI capabilities to the regulatory expectations your quality team will ask about.
+> [!IMPORTANT]
+> **Open WebUI is a general-purpose AI platform. It is not a validated GxP system, and nothing in this guide should be interpreted as a compliance determination.** When deployed with the configuration described here, Open WebUI provides technical controls that your organization's quality team can evaluate as part of their own Computer System Validation (CSV) effort. The mappings below are informational — your validation team must independently verify that each control meets your regulatory obligations.
+>
+> All AI-generated content is unvalidated and must be reviewed by qualified personnel before use in any clinical, regulatory, or safety-critical context.
 
 ### 21 CFR Part 11 — Electronic Records; Electronic Signatures
 
-| Requirement | CFR Section | How Open WebUI Addresses It |
+| Requirement | CFR Section | Technical Controls Available (Validation Required) |
 |---|---|---|
-| **Audit trail** | §11.10(e) | Every conversation is timestamped, attributed to an authenticated user, and immutable when `USER_PERMISSIONS_CHAT_DELETE=False`. |
+| **Audit trail** | §11.10(e) | Conversations are timestamped, attributed to an authenticated user, and non-deletable when `USER_PERMISSIONS_CHAT_DELETE=False`. |
 | **Limiting system access** | §11.10(d) | SSO/OIDC integration, role-based access control, `DEFAULT_USER_ROLE=pending` for approval workflow. |
-| **Authority checks** | §11.10(f) | RBAC enforces that users can only access models, documents, and features assigned to their functional group. |
-| **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management ensure system availability is monitored. |
-| **Personnel accountability** | §11.10(j) | SSO provides authenticated identity for every interaction. No shared accounts. |
-| **Open system controls** | §11.30 | Not applicable — deployed as a closed system on internal infrastructure with no external data exposure. |
+| **Authority checks** | §11.10(f) | RBAC restricts access to models, documents, and features by functional group. |
+| **Operational system checks** | §11.10(h) | Health checks, OpenTelemetry integration, and Redis session management support availability monitoring. |
+| **Personnel accountability** | §11.10(j) | SSO provides authenticated identity for every interaction. Shared accounts are not supported. |
+| **Open system controls** | §11.30 | Designed for deployment as a closed system on internal infrastructure. |
 
 ### EMA Annex 11 — Computerised Systems
 
-| Principle | How Open WebUI Addresses It |
+| Principle | Technical Controls Available (Validation Required) |
 |---|---|
-| **Data integrity** | Immutable conversation records, PostgreSQL WAL for write-ahead logging, automated backups. |
+| **Data integrity** | Non-deletable conversation records, PostgreSQL WAL for write-ahead logging, automated backups. |
 | **Access control** | Multi-tiered: network boundary (TLS proxy), application-level RBAC, SSO identity verification. |
 | **Data migration** | PostgreSQL `pg_dump`/`pg_restore` with integrity verification. Standard, well-documented process. |
 | **Business continuity** | Stateless nodes with automatic failover, Redis HA, PostgreSQL WAL archiving for point-in-time recovery. |
 
 ### What This Means for Your Validation Team
 
-If your organization uses a risk-based approach to CSV (Computer System Validation), Open WebUI typically falls into **GAMP Category 4** (configured software). The validation effort focuses on:
+If your organization uses a risk-based approach to CSV (Computer System Validation), Open WebUI may be considered for classification as **GAMP Category 4** (configured software), though the final determination depends on your specific deployment, customizations, and use case. A typical validation effort focuses on:
 
 1. **Installation Qualification (IQ)** — Verify the Docker Compose stack deploys correctly with the expected images, volumes, and network configuration.
 2. **Operational Qualification (OQ)** — Verify that RBAC rules restrict access as configured, audit trails capture all interactions, and SSO integration works correctly. The security hardening checklist below serves as a starting point for OQ test cases.
@@ -860,7 +865,9 @@ Use this checklist before going to production. Items marked with a regulatory re
 - [ ] All models run locally via Ollama or vLLM — no external API calls for inference
 - [ ] Hugging Face token is stored only in `.env`, not committed to version control
 - [ ] `.env` file has restrictive permissions: `chmod 600 .env`
+- [ ] For production GxP deployments, consider migrating secrets from `.env` to a dedicated secrets manager (e.g., HashiCorp Vault, AWS Secrets Manager)
 - [ ] vLLM API key (`VLLM_API_KEY`) is set to prevent unauthorized direct access to the inference endpoint
+- [ ] Docker image tags pinned to specific versions (not `:main` or `:latest`) for reproducible, auditable deployments
 - [ ] If Functions are used: LLM-Guard or equivalent function installed for prompt injection scanning
 
 ### Operational Security

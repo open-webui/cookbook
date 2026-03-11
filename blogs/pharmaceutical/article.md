@@ -31,19 +31,21 @@ The market is full of "AI for life sciences" products — polished, well-funded,
 
 Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. Here's what that looks like concretely — and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, delivers it:
 
-- **Zero data exfiltration by design.** Open WebUI runs entirely on your infrastructure — on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. No prompts, no completions, no embeddings ever leave your network. There is nothing to trust because there is nothing external.
+- **Designed to keep all data on your infrastructure.** Open WebUI runs entirely on your infrastructure — on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. No prompts, completions, or embeddings are sent to external services as part of core operation.
 
-- **Source-grounded responses for scientific rigor.** Scientists query internal document collections — SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references — and receive answers with inline citations and relevance scores. Each citation links back to the original document. This doesn't make hallucination impossible, but it makes every claim verifiable.
+- **Source-grounded responses for scientific rigor.** Scientists query internal document collections — SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references — and receive answers with inline citations and relevance scores. Each citation links back to the original document. This reduces hallucination risk and makes claims verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
 
 - **Organizational access control out of the box.** Permissions map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it. IT administrators can manage the platform without ever viewing the content of scientific conversations.
 
-- **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. Users cannot delete or create unlogged conversations. Combined with SSO integration, this produces the kind of electronic record that GxP auditors expect to see.
+- **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), users cannot delete conversations or create unlogged sessions. Combined with SSO integration, this provides the technical controls needed to support your organization's electronic record-keeping requirements.
 
 ### What This Looks Like in Practice
 
-A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI and queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response pulls from three internal clinical study reports, cites each by document name with relevance scores, and structures the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF. The entire exchange is logged under her SSO identity.
+A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI and queries the company's internal knowledge base: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response pulls from three internal clinical study reports, cites each by document name with relevance scores, and structures the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF, reviews and edits the content according to her organization's quality procedures, and obtains the required sign-offs before including any AI-assisted content in the submission. The entire exchange is logged under her SSO identity.
 
 Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a specific claim in the summary was generated. The QA team pulls up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp — all attributable to a named user, all retained on company-controlled infrastructure.
+
+> **Note:** This scenario is illustrative. Any use of AI-generated content in regulatory submissions requires your organization's own validation, human expert review, and quality sign-off processes. Open WebUI is a tool that supports these workflows — it does not replace them.
 
 <!-- TODO: Replace with real screenshot of chat UI showing inline citations and source panel -->
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
@@ -134,13 +136,19 @@ The complete Docker Compose stack, security hardening checklist, RBAC configurat
 
 If your organization wants hands-on deployment support, [Open WebUI Enterprise](https://docs.openwebui.com/enterprise/) is available for teams that prefer not to go it alone:
 
-- **Regulatory alignment guidance** — 21 CFR Part 11, Annex 11, HIPAA, SOC 2, ISO 27001
+- **Regulatory alignment guidance** — Guidance on deploying Open WebUI in alignment with frameworks including 21 CFR Part 11, Annex 11, HIPAA, SOC 2, and ISO 27001 *(compliance determination remains your organization's responsibility)*
 - **White-label branding** — Match the AI interface to your corporate identity
 - **Dedicated support & SLAs** — Direct engineering access for architecture review and incident response
 
 Your compounds, your protocols, your models — on your infrastructure.
 
 **[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
+
+---
+
+### Disclaimer
+
+*Open WebUI is a general-purpose AI platform. It is not a validated GxP system. All regulatory compliance determinations — including 21 CFR Part 11, EMA Annex 11, HIPAA, and any other applicable framework — are the sole responsibility of the deploying organization. AI-generated content is not a substitute for professional scientific, clinical, or regulatory judgment and must always be reviewed by qualified personnel before use.*
 
 ---
 

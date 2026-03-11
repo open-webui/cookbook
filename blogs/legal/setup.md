@@ -661,7 +661,7 @@ The Docker Compose file above includes the most important variables for a legal 
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users land in a "pending" state until an admin explicitly approves them. |
 | `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Supports privilege protection.** Restricts IT administrators from viewing attorney-client conversations. *(This setting supports privilege protection but does not alone establish or guarantee privilege; consult ethics counsel.)* |
 | `ENABLE_ADMIN_EXPORT` | `False` | Prevents bulk database exports that could expose privileged material. |
-| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Ensures RBAC model restrictions are enforced - users only see models assigned to their group. |
+| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | Disables sharing prompts/models to the Open WebUI Community hub. |
 | `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Audit trail.** Users cannot delete chat history, preserving the full conversation record. |
@@ -849,7 +849,7 @@ Use this checklist before going to production. Items are organized by security d
 
 - [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - supports attorney-client privilege protection *(consult ethics counsel for your specific obligations)*
 - [ ] `ENABLE_ADMIN_EXPORT=False` - prevents bulk data extraction
-- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - immutable audit trail
+- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - application-level deletion disabled for audit trail
 - [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
 - [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)

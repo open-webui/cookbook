@@ -33,13 +33,13 @@ The market is full of "AI for life sciences" products - polished, well-funded, a
 
 Self-hosting changes the equation. Instead of trusting vendor claims about data handling, you verify them by inspecting the infrastructure yourself. Here's what that looks like concretely - and how [Open WebUI](https://docs.openwebui.com/), a self-hosted AI platform, delivers it:
 
-- **Designed to keep all data on your infrastructure.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. No prompts, completions, or embeddings are sent to external services as part of core operation.
+- **Designed to keep all data on your infrastructure.** Open WebUI runs entirely on your infrastructure - on-premise data center, validated private cloud, or air-gapped environment. Models run locally via Ollama or vLLM. When configured for local-only inference, prompts, completions, and embeddings are not sent to external services *by the application*.
 
 - **Source-grounded responses for scientific rigor.** Scientists query internal document collections - SOPs, study protocols, regulatory guidance, literature databases, pharmacopeia references - and receive answers with inline citations and relevance scores. Each citation links back to the original document. This reduces hallucination risk and makes claims verifiable, but **all AI-generated content must be reviewed by qualified personnel before use in any decision-making, clinical, or regulatory context.**
 
-- **Organizational access control out of the box.** Permissions map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it. IT administrators can manage the platform without ever viewing the content of scientific conversations.
+- **Organizational access control out of the box.** Permissions map to your functional structure: R&D, Clinical, Regulatory, Pharmacovigilance, Manufacturing, Medical Affairs. Each group sees only the models, documents, and capabilities assigned to it, helping to prevent unintended cross-group data exposure. IT administrators can manage the platform without ever viewing the content of scientific conversations.
 
-- **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), users cannot delete conversations or create unlogged sessions. Combined with SSO integration, this provides the technical controls needed to support your organization's electronic record-keeping requirements.
+- **A complete audit trail for every interaction.** Every conversation is timestamped, attributed to an authenticated user, and retained according to your policy. When configured as described in our [Technical Setup Guide](setup.md), the application prevents users from deleting conversations or creating unlogged sessions. Combined with SSO integration, this provides the technical controls needed to support your organization's electronic record-keeping requirements.
 
 ### What This Looks Like in Practice
 

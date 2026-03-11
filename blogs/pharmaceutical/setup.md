@@ -28,9 +28,9 @@ What makes the pharma deployment different isn't the infrastructure - it's the *
 **Key pharma-specific configuration decisions:**
 
 - `ENABLE_ADMIN_CHAT_ACCESS=False` - IT manages the platform without ever seeing the content of scientific conversations. This protects proprietary compound data and pre-competitive research.
-- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates an immutable, timestamped electronic record of every AI interaction, providing the technical controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
+- `USER_PERMISSIONS_CHAT_DELETE=False` + `USER_PERMISSIONS_CHAT_TEMPORARY=False` - Creates a persistent, timestamped electronic record of every AI interaction, providing the application-level controls that organizations may use to support their 21 CFR Part 11 audit trail obligations.
 - `ENABLE_COMMUNITY_SHARING=False` - No data, prompts, or model configurations are shared externally.
-- `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. No cross-contamination.
+- `BYPASS_MODEL_ACCESS_CONTROL=False` - Enforces functional group boundaries. A CMC scientist sees manufacturing models and documents; a PV officer sees pharmacovigilance resources. This helps prevent cross-group data exposure.
 
 ---
 
@@ -617,7 +617,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 |---|---|---|
 | `ENABLE_SIGNUP` | `False` | All users provisioned via SSO or admin. No uncontrolled account creation. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users require explicit admin approval before accessing any AI capabilities. |
-| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Ensures RBAC model restrictions are enforced - users only see models assigned to their functional group. |
+| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their functional group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | No data, prompts, or model configurations shared to external community hubs. |
 
@@ -734,7 +734,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
    - Models: Reasoning models only (e.g., Llama 3.1 70B via vLLM)
    - Knowledge bases: MedDRA dictionaries, CIOMS forms, signal detection SOPs
    - Permissions: RAG-only mode (no web search, no file upload)
-   - *Rationale: PV work is safety-critical. Restricting to RAG-only mode ensures responses are grounded exclusively in validated internal documents - no uncontrolled external content.*
+   - *Rationale: PV work is safety-critical. Restricting to RAG-only mode limits responses to content drawn from validated internal documents, reducing exposure to uncontrolled external content.*
 
 5. **Manufacturing / CMC**
    - Models: All available models
@@ -853,7 +853,7 @@ Use this checklist before going to production. Items are organized by security d
 
 - [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - IT cannot view scientific conversations
 - [ ] `ENABLE_ADMIN_EXPORT=False` - prevents bulk data extraction
-- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - immutable audit trail
+- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - application-level deletion disabled for audit trail
 - [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
 - [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)

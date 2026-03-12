@@ -1,0 +1,7 @@
+{
+  "base_url": "https://your-openwebui-instance.example.com",
+  "api_key": "your-api-key-here",
+  "jwt_token": "your-jwt-token-here",
+  "cf_client_id": "your-cloudflare-client-id-here",
+  "cf_client_secret": "your-cloudflare-client-secret-here"
+}

@@ -1,6 +1,6 @@
-# Legal Industry — Technical Setup Guide
+# Technical Setup Guide
 
-This guide is the engineering companion to [Private AI for the Legal Industry with Open WebUI](article.md). It provides everything your engineering or IT team needs to deploy, configure, and operate the production architecture described there.
+This guide is a technical reference companion to [What Would It Take for a Law Firm to Run AI In-House?](article.md). It walks through one possible production architecture for self-hosting Open WebUI, along with configuration examples that organizations in regulated industries may find relevant. **This is a starting point for evaluation, not a prescriptive deployment guide - your firm's engineering, security, and compliance teams should adapt this architecture to your specific requirements.**
 
 ---
 
@@ -24,42 +24,42 @@ This section explains each component in the production stack and why it exists. 
 
 ### Reverse Proxy + TLS Termination
 
-All traffic enters through a single reverse proxy that enforces TLS encryption in transit. This is your network boundary — nothing reaches Open WebUI without passing through it. For firms with existing network infrastructure, this integrates with your current certificate management and firewall rules. The proxy also handles load balancing across Open WebUI instances, distributing requests evenly to prevent any single node from becoming a bottleneck.
+All traffic enters through a single reverse proxy that enforces TLS encryption in transit. This is your network boundary - traffic is routed through it before reaching Open WebUI. For firms with existing network infrastructure, this integrates with your current certificate management and firewall rules. The proxy also handles load balancing across Open WebUI instances, distributing requests evenly to prevent any single node from becoming a bottleneck.
 
 ### Stateless Open WebUI Nodes
 
 Open WebUI instances run as stateless containers. This means you can:
 
-- Scale horizontally — add nodes during peak usage (e.g., trial preparation) and remove them during quieter times
+- Scale horizontally - add nodes during peak usage (e.g., trial preparation) and remove them during quieter times
 - Lose any single node without service interruption
-- Restart containers without losing data — all persistent state lives in PostgreSQL and Redis
+- Restart containers without losing data - all persistent state lives in PostgreSQL and Redis
 
-Key environment variables for this deployment pattern:
+Some configuration settings are particularly relevant in environments where data sensitivity and access control matter. Here are examples worth considering:
 
-- `ENABLE_ADMIN_CHAT_ACCESS=False` — Protects attorney-client privilege from internal IT access
-- `ENABLE_SIGNUP=False` — No self-registration; user provisioning is controlled
-- `DEFAULT_USER_ROLE=pending` — New accounts require admin approval before accessing any AI capabilities
-- `ENABLE_ADMIN_EXPORT=False` — Prevents bulk data extraction
+- `ENABLE_ADMIN_CHAT_ACCESS=False` - Restricts IT administrators from viewing user conversation content at the application level. *(Firms evaluating this for privilege protection should consult ethics counsel on their specific obligations.)*
+- `ENABLE_SIGNUP=False` - No self-registration; user provisioning is controlled
+- `DEFAULT_USER_ROLE=pending` - New accounts require admin approval before accessing any AI capabilities
+- `ENABLE_ADMIN_EXPORT=False` - Disables bulk data extraction at the application level
 
 ### PostgreSQL + PGVector
 
-PostgreSQL serves dual duty: it stores chat history, user records, and configuration (the audit trail), and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
+PostgreSQL serves dual duty: it stores chat history, user records, and configuration, and with the PGVector extension, it also acts as the vector database for RAG knowledge bases. One database to back up, monitor, and secure rather than two.
 
-For legal teams, the audit trail matters most. Every conversation is persisted, timestamped, and associated with a user identity. Combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, this creates a record that satisfies regulatory and internal governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
+Conversations are persisted, timestamped, and associated with a user identity. When combined with the `USER_PERMISSIONS_CHAT_DELETE=False` setting, chat deletion is disabled at the application level, which organizations can evaluate against their own governance requirements. Connection pooling and proper indexing ensure performance holds at firm-wide scale.
 
 ### Redis
 
-Redis handles session management and WebSocket coordination across stateless nodes. When an attorney starts a conversation on one Open WebUI instance and their next request routes to a separate instance, Redis ensures the session is seamless. Without it, multi-node deployments cannot function. Redis Sentinel or Cluster mode is recommended for production HA.
+Redis handles session management and WebSocket coordination across stateless nodes. When an attorney starts a conversation on one Open WebUI instance and their next request routes to a separate instance, Redis supports session continuity. Without it, multi-node deployments cannot function. Redis Sentinel or Cluster mode is recommended for production HA.
 
 ### Shared Document Storage
 
-Uploaded documents — case files, briefs, internal memos, policy documents — need to be accessible from any Open WebUI instance. An S3-compatible object store (MinIO for on-prem, or your cloud provider's offering) or NFS mount provides this shared layer. Open WebUI's file management dashboard provides a centralized interface to search, view, and manage them.
+Uploaded documents - case files, briefs, internal memos, policy documents - need to be accessible from any Open WebUI instance. An S3-compatible object store (MinIO for on-prem, or your cloud provider's offering) or NFS mount provides this shared layer. Open WebUI's file management dashboard provides a centralized interface to search, view, and manage them.
 
-### Ollama — Local Model Inference
+### Ollama - Local Model Inference
 
-Ollama runs models directly on your infrastructure. This is the core of the data sovereignty promise: prompts, completions, and any intermediate representations never leave your network. Ollama supports GPU passthrough via NVIDIA Container Toolkit, and Open WebUI can load-balance across multiple Ollama instances for concurrent users.
+Ollama runs models directly on your infrastructure. When configured for local-only inference, prompts and completions stay on your network. Ollama supports GPU passthrough via NVIDIA Container Toolkit, and Open WebUI can load-balance across multiple Ollama instances for concurrent users.
 
-### vLLM — GPU-Optimized Inference
+### vLLM - GPU-Optimized Inference
 
 For firms needing maximum throughput from large models (70B+ parameters), vLLM provides optimized GPU inference with continuous batching and PagedAttention. It exposes an OpenAI-compatible API, so Open WebUI connects to it just like any other API endpoint.
 
@@ -67,23 +67,23 @@ vLLM is the right choice when:
 
 - Dozens of attorneys are running concurrent queries
 - You're serving 70B+ parameter models that need tensor parallelism across multiple GPUs
-- You need deterministic throughput guarantees for SLA-sensitive workflows
+- You need consistent throughput for SLA-sensitive workflows
 
-Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to serve smaller models for quick tasks (summarization, Q&A), while using vLLM to handle the large reasoning models for complex legal analysis.
+Both Ollama and vLLM can run side-by-side. A common pattern is to use Ollama to serve smaller models for quick tasks (summarization, Q&A), while using vLLM to handle the large reasoning models for complex analysis tasks.
 
 ### Functions (Optional)
 
-Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/functions/) plugin system enables custom processing logic without external services. Legal-relevant functions include:
+Open WebUI's built-in [Functions](https://docs.openwebui.com/features/plugin/functions/) plugin system enables custom processing logic without external services. Examples include:
 
 - **Rate limiting**: Prevent runaway local LLM usage during bulk document processing
 - **Toxic message filtering**: Content safety guardrails
-- **LLM-Guard prompt injection scanning**: Protect against adversarial inputs that might attempt to extract privileged information
+- **LLM-Guard prompt injection scanning**: Scan for adversarial inputs that might attempt to extract sensitive information
 - **Langfuse monitoring**: Detailed usage analytics per user, model, and practice group
 - **Custom RAG functions**: Firm-specific retrieval logic, e.g., prioritizing recent case law or jurisdiction-specific statutes
 
 ### OpenTelemetry (Optional)
 
-Built-in OpenTelemetry support exports traces, metrics, and logs to your existing observability stack (Prometheus, Grafana, Jaeger, Splunk, Datadog). For firms subject to audit, this provides infrastructure-level evidence that AI systems are operating within policy.
+Built-in OpenTelemetry support exports traces, metrics, and logs to your existing observability stack (Prometheus, Grafana, Jaeger, Splunk, Datadog). This provides infrastructure-level visibility into how AI systems are being used.
 
 ---
 
@@ -105,14 +105,14 @@ For a firm with 200–1,000+ attorneys and concurrent usage of ~50–200 users:
 ### Software Requirements
 
 - **Docker Engine** ≥ 24.0 and **Docker Compose** ≥ 2.20
-- **NVIDIA Container Toolkit** (for GPU nodes) — [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- **TLS certificates** — from your firm's internal CA or Let's Encrypt
-- **LDAP / SSO credentials** — for OAuth/OIDC integration (Okta, Azure AD, Google Workspace, etc.)
-- **DNS entry** — e.g., `ai.yourfirm.com` pointing to the reverse proxy
+- **NVIDIA Container Toolkit** (for GPU nodes) - [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+- **TLS certificates** - from your firm's internal CA or Let's Encrypt
+- **LDAP / SSO credentials** - for OAuth/OIDC integration (Okta, Azure AD, Google Workspace, etc.)
+- **DNS entry** - e.g., `ai.yourfirm.com` pointing to the reverse proxy
 
 ### Network Requirements
 
-- All services communicate on an internal Docker network — no public exposure except the reverse proxy
+- All services communicate on an internal Docker network - no public exposure except the reverse proxy
 - Outbound internet access is **not required** if models are pre-pulled (fully air-gappable)
 - Ports: only `443` (HTTPS) exposed externally
 
@@ -124,7 +124,7 @@ Save this as `docker-compose.yml` in your deployment directory. An accompanying 
 
 ```yaml
 # =============================================================================
-# Open WebUI — Legal Industry Production Stack
+# Open WebUI - Production Stack
 # =============================================================================
 # Usage:
 #   1. Run ./setup.sh to generate .env and required directories
@@ -134,7 +134,7 @@ Save this as `docker-compose.yml` in your deployment directory. An accompanying 
 
 services:
   # ---------------------------------------------------------------------------
-  # Reverse Proxy — TLS termination and load balancing
+  # Reverse Proxy - TLS termination and load balancing
   # ---------------------------------------------------------------------------
   nginx:
     image: nginx:alpine
@@ -153,16 +153,16 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # Open WebUI — Stateless application nodes
+  # Open WebUI - Stateless application nodes
   # ---------------------------------------------------------------------------
   open-webui-1:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production environments
     container_name: owui-node-1
     restart: unless-stopped
     environment:
       # --- Core ---
       - WEBUI_URL=${WEBUI_URL}
-      - WEBUI_NAME=${WEBUI_NAME:-Legal AI}
+      - WEBUI_NAME=${WEBUI_NAME:-AI Assistant}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - PORT=8080
 
@@ -186,7 +186,7 @@ services:
       - OPENAI_API_KEY=${VLLM_API_KEY:-sk-none}
       - ENABLE_OPENAI_API=True
 
-      # --- Legal-specific security defaults ---
+      # --- Security defaults ---
       - ENABLE_SIGNUP=False
       - DEFAULT_USER_ROLE=pending
       - ENABLE_ADMIN_CHAT_ACCESS=False
@@ -239,12 +239,12 @@ services:
   # Docker Compose list-style environment blocks do not support YAML merge keys.
   # If you add or change a variable above, update it here as well.
   open-webui-2:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:0.6  # Pin to a specific version for production environments
     container_name: owui-node-2
     restart: unless-stopped
     environment:
       - WEBUI_URL=${WEBUI_URL}
-      - WEBUI_NAME=${WEBUI_NAME:-Legal AI}
+      - WEBUI_NAME=${WEBUI_NAME:-AI Assistant}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - PORT=8080
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -296,7 +296,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # PostgreSQL 16 + PGVector — Database and vector store
+  # PostgreSQL 16 + PGVector - Database and vector store
   # ---------------------------------------------------------------------------
   postgres:
     image: pgvector/pgvector:pg16
@@ -328,7 +328,7 @@ services:
         -c max_wal_senders=3
 
   # ---------------------------------------------------------------------------
-  # Redis — Session management and WebSocket coordination
+  # Redis - Session management and WebSocket coordination
   # ---------------------------------------------------------------------------
   redis:
     image: redis:7-alpine
@@ -353,7 +353,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # Ollama — Local model inference (smaller models, ≤13B)
+  # Ollama - Local model inference (smaller models, ≤13B)
   # ---------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
@@ -372,7 +372,7 @@ services:
       - owui-net
 
   # ---------------------------------------------------------------------------
-  # vLLM — GPU-optimized inference (large models, 70B+)
+  # vLLM - GPU-optimized inference (large models, 70B+)
   # ---------------------------------------------------------------------------
   vllm:
     image: vllm/vllm-openai:latest
@@ -487,7 +487,7 @@ Save this as `setup.sh` and run it before your first `docker compose up`:
 ```bash
 #!/usr/bin/env bash
 # =============================================================================
-# Open WebUI — Legal Industry Setup Script
+# Open WebUI - Production Setup Script
 # =============================================================================
 # This script creates the required directory structure, generates secrets,
 # pulls initial models, and validates the environment before first boot.
@@ -545,15 +545,15 @@ generate_secret() {
 if [ ! -f .env ]; then
     cat > .env << EOF
 # =============================================================================
-# Open WebUI — Legal Industry Environment Configuration
+# Open WebUI - Environment Configuration
 # Generated on $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # =============================================================================
 
 # --- Public URL ---
 WEBUI_URL=https://ai.yourfirm.com
-WEBUI_NAME=Legal AI
+WEBUI_NAME=AI Assistant
 
-# --- Secret key (used for JWT signing — KEEP THIS SECRET) ---
+# --- Secret key (used for JWT signing - KEEP THIS SECRET) ---
 WEBUI_SECRET_KEY=$(generate_secret)
 
 # --- Admin account (created on first startup) ---
@@ -582,14 +582,14 @@ OTEL_ENDPOINT=
 
 # =============================================================================
 # IMPORTANT: Update the following before deploying:
-#   1. WEBUI_URL — your actual domain
-#   2. ADMIN_EMAIL / ADMIN_PASSWORD — your admin credentials
-#   3. HF_TOKEN — your Hugging Face token (for gated models like Llama)
+#   1. WEBUI_URL - your actual domain
+#   2. ADMIN_EMAIL / ADMIN_PASSWORD - your admin credentials
+#   3. HF_TOKEN - your Hugging Face token (for gated models like Llama)
 #   4. Place TLS certs in ./nginx/certs/ (fullchain.pem + privkey.pem)
 # =============================================================================
 EOF
     info ".env file created. Review and update it before starting."
-    warn "Generated admin password is in .env — save it securely."
+    warn "Generated admin password is in .env - save it securely."
 else
     warn ".env already exists. Skipping generation."
 fi
@@ -609,7 +609,7 @@ fi
 
 # Pull models (adjust to your firm's needs)
 MODELS=(
-    "llama3.1:8b"       # Fast — summarization, Q&A, drafting
+    "llama3.1:8b"       # Fast - summarization, Q&A, drafting
     "nomic-embed-text"  # Embedding model for RAG
 )
 
@@ -651,21 +651,21 @@ echo "==========================================================================
 
 ## Environment Variable Reference
 
-The Docker Compose file above includes the most important variables for a legal deployment. This section explains the legal-specific rationale for each configuration choice.
+The Docker Compose file above includes the most important variables for this deployment pattern. This section explains the rationale for each configuration choice. **These descriptions explain what each setting does - they do not constitute compliance guidance. Your firm's security and compliance teams should determine which settings are appropriate for your environment.**
 
 ### Security & Access Control
 
 | Variable | Value | Why |
 |---|---|---|
-| `ENABLE_SIGNUP` | `False` | Prevents unauthorized accounts. All users are provisioned by an admin or synced via SSO. |
+| `ENABLE_SIGNUP` | `False` | Disables self-registration. All users are provisioned by an admin or synced via SSO. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users land in a "pending" state until an admin explicitly approves them. |
-| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | **Critical for privilege.** Prevents IT administrators from accessing attorney-client conversations. |
-| `ENABLE_ADMIN_EXPORT` | `False` | Prevents bulk database exports that could expose privileged material. |
-| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Ensures RBAC model restrictions are enforced — users only see models assigned to their group. |
+| `ENABLE_ADMIN_CHAT_ACCESS` | `False` | Restricts IT administrators from viewing user conversation content at the application level. *(Firms evaluating this for privilege-related purposes should consult ethics counsel.)* |
+| `ENABLE_ADMIN_EXPORT` | `False` | Disables bulk database exports at the application level. |
+| `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
 | `ENABLE_COMMUNITY_SHARING` | `False` | Disables sharing prompts/models to the Open WebUI Community hub. |
-| `USER_PERMISSIONS_CHAT_DELETE` | `False` | **Audit compliance.** Users cannot delete chat history, preserving the full conversation record. |
-| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Prevents users from creating temporary (unlogged) chats that would bypass the audit trail. |
+| `USER_PERMISSIONS_CHAT_DELETE` | `False` | Disables chat deletion at the application level. |
+| `USER_PERMISSIONS_CHAT_TEMPORARY` | `False` | Disables temporary (unlogged) chats. |
 
 ### RAG Configuration
 
@@ -692,23 +692,23 @@ The Docker Compose file above includes the most important variables for a legal 
 The Redis `command` in the Docker Compose file includes critical settings:
 
 ```
-maxclients 10000    # Default is often 1000 — too low for production
+maxclients 10000    # Default is often 1000 - too low for production
 timeout 1800        # Close idle connections after 30 minutes
 save 60 1000        # Snapshot every 60s if 1000+ keys changed
 appendonly yes      # AOF persistence for durability
 ```
 
-**Without `timeout 1800`**, idle Redis connections accumulate indefinitely. Over days or weeks, you will hit `maxclients` and all logins will fail with `500 Internal Server Error`. This is a documented failure mode — see the [Open WebUI Redis documentation](https://docs.openwebui.com/reference/env-configuration/#redis_url).
+**Without `timeout 1800`**, idle Redis connections accumulate indefinitely. Over days or weeks, you will hit `maxclients` and all logins will fail with `500 Internal Server Error`. This is a documented failure mode - see the [Open WebUI Redis documentation](https://docs.openwebui.com/reference/env-configuration/#redis_url).
 
 ---
 
 ## RBAC Configuration Guide
 
-After first deployment, configure practice groups via the Admin Panel. This section provides the step-by-step workflow.
+After first deployment, you can configure groups via the Admin Panel. The following is an example workflow - **your firm should design its own group structure based on its practice areas, risk profile, and governance requirements.**
 
 ### Step 1: Configure OAuth / SSO
 
-SSO is configured entirely through environment variables — there is no admin panel UI for it. Add the following to your `.env` file or Docker Compose environment block and restart the container:
+SSO is configured entirely through environment variables - there is no admin panel UI for it. Add the following to your `.env` file or Docker Compose environment block and restart the container:
 
 ```
 OPENID_PROVIDER_URL=https://login.yourfirm.com/.well-known/openid-configuration
@@ -780,7 +780,7 @@ For each knowledge base in **Workspace → Knowledge**:
 
 ## Knowledge Base Setup Guide
 
-Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section walks through configuring knowledge bases for a legal practice.
+Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section walks through configuring knowledge bases for this deployment pattern.
 
 ### Recommended Knowledge Base Structure
 
@@ -807,10 +807,10 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
    - Generates vector embeddings and stores them in PGVector
 5. Users in the assigned groups can now reference this knowledge base in chat by typing `#` followed by the knowledge base name
 
-### RAG Best Practices for Legal Documents
+### RAG Best Practices
 
 - **Chunk size**: The default works well for most legal documents. For very long contracts, consider uploading individual sections as separate documents for more precise retrieval.
-- **Citation verification**: RAG provides relevance scores with each retrieved chunk. Train attorneys to check citations against the source — RAG reduces hallucination but does not eliminate it.
+- **Citation verification**: RAG provides relevance scores with each retrieved chunk. Attorneys must always verify citations against the source document - RAG reduces hallucination but does not eliminate it. **All AI-generated content must be reviewed by qualified attorneys before reliance or use in any legal proceeding.**
 - **Version control**: When a statute or policy updates, upload the new version and remove the old one. Knowledge bases can be updated without downtime.
 - **Document naming**: Use descriptive filenames (e.g., `Smith-v-Jones-2024-MSJ.pdf` instead of `doc1.pdf`). Open WebUI displays filenames in citation references.
 
@@ -818,50 +818,52 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 
 The Docker Compose stack pulls `nomic-embed-text` via Ollama for generating embeddings locally. Configure this in **Admin Panel → Settings → Documents → Embedding Model**.
 
-For higher-quality embeddings (recommended for 10,000+ document deployments), consider using a dedicated embedding endpoint. Set `RAG_OPENAI_API_BASE_URL` to point to a self-hosted embedding service or use Ollama's built-in embedding support (no data leaves your network either way).
+For higher-quality embeddings (recommended for 10,000+ document deployments), consider using a dedicated embedding endpoint. Set `RAG_OPENAI_API_BASE_URL` to point to a self-hosted embedding service or use Ollama's built-in embedding support (both options keep data on your infrastructure when configured accordingly).
 
 ---
 
 ## Security Hardening Checklist
 
-Use this checklist before going to production. Each item maps to a specific legal or compliance requirement.
+The following checklist describes operational security measures. **This is not a compliance checklist - your firm's security and compliance teams should determine which items apply to your environment and what additional measures are needed.**
 
 ### Network Layer
 
-- [ ] TLS 1.2+ enforced on the reverse proxy — no plaintext HTTP traffic reaches Open WebUI
+- [ ] TLS 1.2+ enforced on the reverse proxy - no plaintext HTTP traffic reaches Open WebUI
 - [ ] Only port 443 is exposed to the user network; all other services are on internal Docker network
 - [ ] HSTS header set with `max-age=63072000; includeSubDomains`
 - [ ] Security headers: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`
 - [ ] Rate limiting configured on the reverse proxy to prevent abuse
-- [ ] DNS resolves only to the reverse proxy — no direct access to application nodes
+- [ ] DNS resolves only to the reverse proxy - no direct access to application nodes
 
 ### Authentication & Authorization
 
-- [ ] `ENABLE_SIGNUP=False` — no self-registration
-- [ ] `DEFAULT_USER_ROLE=pending` — new SSO users require admin approval
+- [ ] `ENABLE_SIGNUP=False` - no self-registration
+- [ ] `DEFAULT_USER_ROLE=pending` - new SSO users require admin approval
 - [ ] SSO/OIDC configured with your firm's identity provider
-- [ ] `ENABLE_OAUTH_GROUP_MANAGEMENT=True` — groups sync from IdP
-- [ ] `ENABLE_OAUTH_ROLE_MANAGEMENT=True` — roles sync from IdP
-- [ ] `BYPASS_MODEL_ACCESS_CONTROL=False` — RBAC enforced on model access
-- [ ] `BYPASS_ADMIN_ACCESS_CONTROL=False` — admins subject to workspace ACLs
+- [ ] `ENABLE_OAUTH_GROUP_MANAGEMENT=True` - groups sync from IdP
+- [ ] `ENABLE_OAUTH_ROLE_MANAGEMENT=True` - roles sync from IdP
+- [ ] `BYPASS_MODEL_ACCESS_CONTROL=False` - RBAC enforced on model access
+- [ ] `BYPASS_ADMIN_ACCESS_CONTROL=False` - admins subject to workspace ACLs
 
 ### Data Protection
 
-- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` — **attorney-client privilege protection**
-- [ ] `ENABLE_ADMIN_EXPORT=False` — prevents bulk data extraction
-- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` — immutable audit trail
-- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` — no unlogged conversations
-- [ ] `ENABLE_COMMUNITY_SHARING=False` — no external data sharing
+- [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - restricts IT administrators from viewing user conversation content at the application level
+- [ ] `ENABLE_ADMIN_EXPORT=False` - disables bulk data extraction at the application level
+- [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - disables chat deletion at the application level
+- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
+- [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)
 - [ ] Redis `requirepass` set if Redis is network-accessible (not needed when Redis is internal-only via Docker network)
 - [ ] Backup encryption enabled (see [Backup & Disaster Recovery](#backup--disaster-recovery))
 
 ### Model & Inference Security
 
-- [ ] All models run locally via Ollama or vLLM — no external API calls for inference
+- [ ] When configured for local-only inference, all models run via Ollama or vLLM on your infrastructure
 - [ ] Hugging Face token is stored only in `.env`, not committed to version control
 - [ ] `.env` file has restrictive permissions: `chmod 600 .env`
+- [ ] For production deployments, consider migrating secrets from `.env` to a dedicated secrets manager (e.g., HashiCorp Vault, AWS Secrets Manager)
 - [ ] vLLM API key (`VLLM_API_KEY`) is set to prevent unauthorized direct access to the inference endpoint
+- [ ] Docker image tags pinned to specific versions (not `:main` or `:latest`) for reproducible, auditable deployments
 - [ ] If Functions are used: LLM-Guard or equivalent function installed for prompt injection scanning
 
 ### Operational Security
@@ -894,7 +896,7 @@ Add this to your crontab (`crontab -e`) or scheduling system:
 
 ```bash
 #!/usr/bin/env bash
-# Daily PostgreSQL backup — run via cron at 02:00 UTC
+# Daily PostgreSQL backup - run via cron at 02:00 UTC
 # 0 2 * * * /opt/openwebui/backup-postgres.sh
 
 set -euo pipefail
@@ -944,4 +946,4 @@ For mission-critical deployments, enable PostgreSQL WAL archiving for point-in-t
 
 ---
 
-*This guide is maintained alongside the [Private AI for the Legal Industry with Open WebUI](article.md) blog post. For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*
+*This guide is maintained alongside [What Would It Take for a Law Firm to Run AI In-House?](article.md). For questions about enterprise deployment, contact [sales@openwebui.com](mailto:sales@openwebui.com).*

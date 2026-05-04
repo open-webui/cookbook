@@ -66,7 +66,7 @@ Two weeks later, during an internal pre-submission readiness review, a colleague
 
 #### Visualizing Clinical Trial Data with Open Terminal
 
-The example above shows how Open WebUI can ground responses in source documents — the scientist asks a question, and the AI pulls from the firm's CSRs to produce a cited summary. But a text summary is only half the story. When that same scientist needs to present the Verixanib efficacy data to a cross-functional team ahead of a data monitoring committee meeting, she needs visuals — and she needs them built from the same underlying trial data, not mocked up in PowerPoint.
+The example above shows how Open WebUI can ground responses in source documents — the scientist asks a question, and the AI pulls from the company's CSRs to produce a cited summary. But text summaries may not be sufficient for all use cases. When that same scientist needs to present the Verixanib efficacy data to a cross-functional team ahead of a data monitoring committee meeting, she needs visuals — and she needs them built from the same underlying trial data, not recreated manually.
 
 [Open Terminal](https://docs.openwebui.com/features/extensibility/open-terminal) is a sandboxed computing environment built into Open WebUI. Instead of writing code, a scientist provides the relevant data, and describes an analysis in plain language. The AI writes and executes code inside an isolated Docker container on the organization's infrastructure — complete with scientific libraries — and returns the results directly in the chat. The file browser lets scientists upload datasets, preview outputs, and download finished artifacts without ever leaving the interface.
 
@@ -74,13 +74,13 @@ She switches to an Open Terminal session, attaches the consolidated Verixanib ef
 
 *"From this Verixanib Phase III trial data, create a four-panel efficacy overview: (1) a line graph showing ACR20 response rate over time by treatment arm across all three studies, (2) a grouped bar chart comparing ACR20, ACR50, and ACR70 response rates at the primary endpoint for each treatment arm in VRX-301, (3) a line graph of DAS28-CRP change from baseline over time for VRX-302 treatment arms including an active comparator, and (4) a grouped bar chart of Week 24 HAQ-DI improvement across all monotherapy arms from VRX-303."*
 
-The AI can read the dataset, generate the four-panel figure, and return it in the chat. She reviews the output, asks for a color adjustment to match the company's slide template, and downloads the final figure — all within the same conversation, all on the same infrastructure where the source CSRs live.
+The AI can read the dataset, generate the four-panel figure, and return it in the chat. She reviews the output, asks for a color adjustment to match the company's slide template, and can download the final figure — all within the same conversation, all on the same infrastructure where the source CSRs live.
 
 ![Open Terminal generating trial data trend visualizations from an attached dataset](images/trial_visuals.gif)
 
-#### Accelerating Drug Discovery with SAR Visualization
+#### SAR Visualization in Drug Discovery
 
-A medicinal chemist is deep in lead optimization. His team has synthesized 200+ analogs of a kinase inhibitor scaffold, and the SAR is getting complex — potency cliffs appear when certain R-groups are swapped, but nobody has mapped the full landscape systematically. He references a compound library CSV (SMILES strings, IC50 values, selectivity ratios, and physicochemical descriptors) from Knowledge, enables Open Terminal, and types:
+A medicinal chemist is deep in lead optimization. His team has synthesized 200+ analogs of a kinase inhibitor scaffold, and the SAR is getting complex — potency cliffs appear when certain R-groups are swapped, but the team hasn't yet mapped the full landscape systematically. He references a compound library CSV (SMILES strings, IC50 values, selectivity ratios, and physicochemical descriptors) from Knowledge, enables Open Terminal, and types:
 
 *"Using RDKit: compute Morgan fingerprints for these compounds, cluster them by Tanimoto similarity, and generate a heatmap showing the relationship between structural clusters and pIC50. Annotate the cluster with the best selectivity ratio. Add a second panel showing a matched molecular pair analysis for substitutions at the R1 position — plot the ΔpIC50 for each transformation as a horizontal bar chart, sorted by magnitude."*
 
@@ -92,11 +92,11 @@ Industry leaders have described this iterative approach — the model predicts, 
 
 #### Detecting Safety Signals in Pharmacovigilance Data
 
-A pharmacovigilance scientist is running a routine disproportionality screen on the company's adverse event database. A new signal has appeared for a marketed product — a cluster of hepatic events that wasn't flagged in the clinical program. She needs to characterize it fast, before the next PSMF update. She exports the case-level data (MedDRA preferred terms, time-to-onset, seriousness criteria, reporter type, and co-suspect medications) from the safety database, uploads the CSV to Open Terminal, and types:
+A pharmacovigilance scientist is running a routine disproportionality screen on the company's adverse event database. A new signal has appeared for a marketed product — a cluster of hepatic events that wasn't flagged in the clinical program. She needs to characterize it before the next PSMF update. She exports the case-level data (MedDRA preferred terms, time-to-onset, seriousness criteria, reporter type, and co-suspect medications) from the safety database, uploads the CSV to Open Terminal, and types:
 
 *"Calculate the proportional reporting ratio (PRR) and reporting odds ratio (ROR) with 95% confidence intervals for all hepatic preferred terms in this dataset. Generate three visualizations: a forest plot of PRR values for all hepatic PTs that cross the signaling threshold (PRR ≥ 2, chi-squared ≥ 4, N ≥ 3), a time-to-onset histogram for the flagged events grouped by seriousness, and a bubble chart showing case volume by preferred term on the x-axis, PRR on the y-axis, and bubble size scaled to the proportion of serious cases."*
 
-The AI can process the dataset, run the statistical calculations, and return three figures. The forest plot shows that three hepatic PTs appear to exceed the signaling threshold. The time-to-onset histogram shows a concentration in the first 90 days — suggesting a dose-dependent mechanism rather than idiosyncratic injury. The bubble chart gives the scientist an at-a-glance view of which terms carry the most signal weight. She downloads the figures, attaches them to a signal evaluation report, and has a preliminary assessment ready for the safety committee — reducing the iteration time between the pharmacovigilance scientist and the computational analysis.
+The AI can process the dataset, run the statistical calculations, and return three figures. The forest plot shows that three hepatic PTs appear to exceed the signaling threshold. The time-to-onset histogram shows a concentration in the first 90 days — a pattern the scientist can evaluate further as part of the signal assessment. The bubble chart gives the scientist an at-a-glance view of which terms carry the most signal weight. She downloads the figures, attaches them to a signal evaluation report, and has a preliminary assessment ready for the safety committee — reducing the iteration time between the pharmacovigilance scientist and the computational analysis.
 
 ![Open Terminal with pharmacovigilance signal detection visualizations](images/terminal_pv_signals.gif)
 

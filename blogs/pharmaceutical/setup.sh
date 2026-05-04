@@ -56,6 +56,7 @@ generate_secret() {
 }
 
 if [ ! -f .env ]; then
+    TERMINAL_KEY=$(generate_secret)
     cat > .env << EOF
 # =============================================================================
 # Open WebUI — Pharma Industry Environment Configuration
@@ -85,6 +86,10 @@ VLLM_TP_SIZE=2
 VLLM_MAX_MODEL_LEN=8192
 VLLM_API_KEY=$(generate_secret)
 HF_TOKEN=hf_your_token_here
+
+# --- Open Terminal ---
+OPEN_TERMINAL_API_KEY=${TERMINAL_KEY}
+TERMINAL_SERVER_CONNECTIONS='[{\"url\":\"http://open-terminal:8000\",\"key\":\"${TERMINAL_KEY}\"}]'
 
 # --- Workers ---
 UVICORN_WORKERS=4
@@ -152,6 +157,10 @@ echo "       - privkey.pem   (private key)"
 echo "    3. Update nginx/nginx.conf server_name to match your domain"
 echo "    4. Start the stack:  docker compose up -d"
 echo "    5. Access the UI at: https://ai.yourcompany.com"
+echo "    6. Install the Inline Visualizer tool & skill (see setup.md Step 5)"
+echo ""
+echo "  Open Terminal is pre-configured via TERMINAL_SERVER_CONNECTIONS."
+echo "  Verify it's connected: Admin Settings → Integrations → Open Terminal"
 echo ""
 echo "  To check service health:  docker compose ps"
 echo "  To view logs:             docker compose logs -f open-webui-1"

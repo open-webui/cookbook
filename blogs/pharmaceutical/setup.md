@@ -309,7 +309,7 @@ services:
   # Ollama - Local model inference (smaller models, ≤13B)
   # ---------------------------------------------------------------------------
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.6  # Pin to a specific version for production environments
     container_name: owui-ollama
     restart: unless-stopped
     volumes:
@@ -328,7 +328,7 @@ services:
   # vLLM - GPU-optimized inference (large models, 70B+)
   # ---------------------------------------------------------------------------
   vllm:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:v0.8  # Pin to a specific version for production environments
     container_name: owui-vllm
     restart: unless-stopped
     command: >
@@ -354,7 +354,7 @@ services:
   # Open Terminal - Sandboxed code execution for scientists
   # ---------------------------------------------------------------------------
   open-terminal:
-    image: ghcr.io/open-webui/open-terminal
+    image: ghcr.io/open-webui/open-terminal:latest  # Pin to a specific version for production environments
     container_name: owui-terminal
     restart: unless-stopped
     environment:
@@ -649,7 +649,7 @@ These are the same Open WebUI environment variables used in any deployment. This
 
 | Variable | Value | Rationale |
 |---|---|---|
-| `ENABLE_SIGNUP` | `False` | All users provisioned via SSO or admin. No uncontrolled account creation. |
+| `ENABLE_SIGNUP` | `False` | All users provisioned via SSO or admin. Disables the self-registration form. |
 | `DEFAULT_USER_ROLE` | `pending` | New SSO users require explicit admin approval before accessing any AI capabilities. |
 | `BYPASS_MODEL_ACCESS_CONTROL` | `False` | Enforces RBAC model restrictions - users only see models assigned to their functional group. |
 | `BYPASS_ADMIN_ACCESS_CONTROL` | `False` | Admins are subject to the same workspace access rules as regular users. |
@@ -710,7 +710,7 @@ The following table lists technical capabilities that Open WebUI provides when c
 
 ### What This Might Mean for a Validation Team
 
-If your organization uses a risk-based approach to CSV (Computer System Validation), the GAMP categorization, validation scope, and testing depth are decisions your validation team must make based on your specific deployment, customizations, and intended use. Open WebUI's open-source codebase and container-based deployment with version-pinned images may facilitate aspects of your validation process, but the validation strategy itself is an organizational responsibility.
+If your organization uses a risk-based approach to CSV (Computer System Validation), the GAMP categorization, validation scope, and testing depth are decisions your validation team must make based on your specific deployment, customizations, and intended use. Open WebUI's publicly available codebase and container-based deployment with version-pinned images may facilitate aspects of your validation process, but the validation strategy itself is an organizational responsibility.
 
 ---
 
@@ -935,8 +935,8 @@ The following checklist describes operational security measures. **This is not a
 - [ ] `ENABLE_ADMIN_CHAT_ACCESS=False` - restricts IT administrators from viewing user conversation content at the application level
 - [ ] `ENABLE_ADMIN_EXPORT=False` - disables bulk data extraction at the application level
 - [ ] `USER_PERMISSIONS_CHAT_DELETE=False` - disables chat deletion at the application level
-- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - no unlogged conversations
-- [ ] `ENABLE_COMMUNITY_SHARING=False` - no external data sharing
+- [ ] `USER_PERMISSIONS_CHAT_TEMPORARY=False` - disables the temporary chat option in the UI
+- [ ] `ENABLE_COMMUNITY_SHARING=False` - disables the community sharing feature
 - [ ] PostgreSQL configured with encryption at rest (transparent data encryption or full-disk encryption on the host)
 - [ ] Redis `requirepass` set if Redis is network-accessible (not needed when Redis is internal-only via Docker network)
 - [ ] Backup encryption enabled (see [Backup & Disaster Recovery](#backup--disaster-recovery))
@@ -953,7 +953,7 @@ The following checklist describes operational security measures. **This is not a
 
 ### Open Terminal Security
 
-- [ ] `OPEN_TERMINAL_API_KEY` is set — without it, anyone who can reach the port has full access
+- [ ] `OPEN_TERMINAL_API_KEY` is set — without it, the terminal endpoint is unauthenticated (the Docker Compose reference above includes this key by default)
 - [ ] Open Terminal container is on the internal Docker network only — not exposed to external traffic
 - [ ] Resource limits applied: `memory: 4G` and `cpus: 4.0` (or appropriate for your environment)
 - [ ] `OPEN_TERMINAL_MAX_SESSIONS=16` to help limit resource consumption from concurrent terminal sessions
@@ -983,7 +983,7 @@ The following checklist describes operational security measures. **This is not a
 | **Ollama models** | `ollama-data` volume | Volume snapshot or re-pull (models are public) |
 | **Open WebUI data** | `owui-data` volume | Volume snapshot |
 | **Open Terminal data** | `terminal-data` volume | Volume snapshot (or ephemeral — rebuild on demand) |
-| **Configuration** | `.env`, `nginx/`, `docker-compose.yml` | Git repository (exclude secrets) |
+| **Configuration** | `.env`, `nginx/`, `docker-compose.yml` | Git repository (`.env` must be excluded via `.gitignore` — it contains credentials) |
 | **TLS certificates** | `nginx/certs/` | Certificate management system |
 
 ### Automated PostgreSQL Backup Script
@@ -1014,7 +1014,7 @@ docker compose exec -T postgres pg_dump \
 # Verify backup integrity (pg_restore runs on the host against the host-side file)
 pg_restore --list "${BACKUP_FILE}" > /dev/null 2>&1 \
     && echo "[OK] Backup verified: ${BACKUP_FILE}" \
-    || echo "[ERROR] Backup verification failed: ${BACKUP_FILE}"
+    || { echo "[ERROR] Backup verification failed: ${BACKUP_FILE}"; exit 1; }
 
 # Prune old backups
 find "${BACKUP_DIR}" -name "openwebui_*.sql.gz" -mtime +${RETENTION_DAYS} -delete

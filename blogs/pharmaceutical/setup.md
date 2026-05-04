@@ -853,7 +853,7 @@ This plugin has two components:
 
 Without this, visualizations render normally but interactive buttons that send prompts back to the chat (`sendPrompt`) will not work.
 
-> **Tip:** A strong model is required for complex, visually detailed interactive visualizations. Tested with Claude Haiku 4.5 and Claude Opus 4.5.
+> **Tip:** Performance depends on model capability; stronger models generally produce better results for complex, visually detailed interactive visualizations.
 
 ---
 
@@ -861,7 +861,7 @@ Without this, visualizations render normally but interactive buttons that send p
 
 Open WebUI's RAG system ingests documents and creates searchable vector embeddings in PGVector. This section provides an example knowledge base design for pharmaceutical contexts.
 
-### Recommended Knowledge Base Structure
+### Example Knowledge Base Structure
 
 | Knowledge Base | Contents | Functional Groups | Notes |
 |---|---|---|---|
@@ -887,7 +887,7 @@ Open WebUI's RAG system ingests documents and creates searchable vector embeddin
 3. Upload documents (supported formats: PDF, DOCX, TXT, Markdown, HTML, CSV, XLSX, PPTX)
 4. Open WebUI automatically:
    - Extracts text from uploaded documents
-   - Chunks the content for optimal retrieval
+   - Chunks the content for retrieval
    - Generates vector embeddings and stores them in PGVector
 5. Users in the assigned groups can now reference this knowledge base in chat by typing `#` followed by the knowledge base name
 

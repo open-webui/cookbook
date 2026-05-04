@@ -765,7 +765,7 @@ Navigate to **Admin Panel → Groups** and create groups matching your organizat
 
 4. **Medical Affairs**
    - Models: All available models
-   - Knowledge bases: Product monographs, congress abstracts, KOL slide decks
+   - Knowledge bases: Product monographs, congress abstracts, medical education slide decks
    - Permissions: Web search enabled, file upload enabled
    - *Rationale: Medical Affairs teams need access to public literature and congress proceedings alongside internal medical information.*
 

@@ -24,7 +24,7 @@ That backdrop is pushing some pharma companies to ask a more fundamental questio
 
 **Scientists who need computational AI the most can't always access it.** Drug discovery, clinical biostatistics, and pharmacometrics increasingly depend on computational workflows in order to run analyses, generate visualizations, and fit models. But [30% of IT-related positions in pharmaceutical companies remain unfilled](https://www.tracekey.com/en/skills-shortage-in-pharma/) in key markets, and the scientists with deep domain expertise are rarely the ones writing Python scripts. McKinsey's pharma leaders stress what J&J's Ashita Batavia calls ["trilingualism"](https://www.mckinsey.com/industries/life-sciences/our-insights/the-synthesis/how-pharma-is-rewriting-the-ai-playbook-perspectives-from-industry-leaders) — proficiency in data science, domain science, and business strategy — but acknowledge that finding people with all three is rare. The result is computational capability bottlenecks at the IT team, and scientists waiting in queue instead of iterating on analyses.
 
-These challenges are causing some pharma companies are asking whether AI they can *control*, *validate*, *audit*, and *put directly in scientists' hands* might be worth exploring, instead of relying solely on third-party platforms.
+These challenges are leading some pharma companies to ask whether AI they can *control*, *validate*, *audit*, and *put directly in scientists' hands* might be worth exploring, instead of relying solely on third-party platforms.
 
 ---
 
@@ -54,13 +54,13 @@ These aren't unique to any one product, but they are the criteria that organizat
 
 ### Illustrative Examples
 
-> **Note:** The following scenarios are illustrative and do not represent validated or endorsed workflows. Organizations must design, test, and validate their own AI workflows according to their regulatory and governance requirements.
+> **Note:** The following scenarios are illustrative and do not represent validated or endorsed workflows. All drug names, compound data, study identifiers, and clinical results in these scenarios are entirely fictional and created solely for illustration. Organizations must design, test, and validate their own AI workflows according to their regulatory and governance requirements.
 
 #### Querying Internal Documents with Source Citations
 
-A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI, configured with the company's internal document library, and queries: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response can draw from internal clinical study reports, cite each by document name with relevance scores, and structure the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF. The conversation can be logged under her SSO identity for search and audit workflows.
+A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI, configured with the company's internal document library, and queries: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response can draw from internal clinical study reports, can cite each by document name with relevance scores, and can structure the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF. The conversation can be logged under her SSO identity for search and audit workflows.
 
-Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a specific claim in the summary was generated. The QA team pulls up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp — all attributable to a named user, all retained on company-controlled infrastructure. That level of traceability is increasingly expected in regulated environments.
+Two weeks later, during an FDA pre-submission meeting, a reviewer asks how a specific claim in the summary was generated. The QA team can pull up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp — all attributable to a named user, all retained on company-controlled infrastructure. That level of traceability is increasingly emphasized in regulatory guidance.
 
 ![Open WebUI chat interface with document citations and relevance scores](images/chat_citations.png)
 
@@ -84,11 +84,11 @@ A medicinal chemist is deep in lead optimization. His team has synthesized 200+ 
 
 *"Using RDKit: compute Morgan fingerprints for these compounds, cluster them by Tanimoto similarity, and generate a heatmap showing the relationship between structural clusters and pIC50. Annotate the cluster with the best selectivity ratio. Add a second panel showing a matched molecular pair analysis for substitutions at the R1 position — plot the ΔpIC50 for each transformation as a horizontal bar chart, sorted by magnitude."*
 
-The AI installs RDKit and scikit-learn, calculates fingerprints, runs the clustering, identifies the matched pairs, and produces a two-panel figure: the SAR heatmap on top, the matched molecular pair bar chart below. The chemist spots a pattern — a fluorine-to-chlorine swap at R1 consistently boosts potency by ~0.5 log units without killing selectivity — and sends the figure to the project team with a follow-up synthesis proposal.
+The AI installs RDKit and scikit-learn, calculates fingerprints, runs the clustering, identifies the matched pairs, and produces a two-panel figure: the SAR heatmap on top, the matched molecular pair bar chart below. The chemist spots a potential pattern — a fluorine-to-chlorine swap at R1 appears to boost potency by ~0.5 log units without killing selectivity — and sends the figure to the project team with a follow-up synthesis proposal for experimental validation.
 
 ![Open Terminal with SAR heatmap and matched molecular pair analysis](images/terminal_sar_analysis.png)
 
-This is what Genentech's John Marioni describes as a "lab-in-the-loop": the model predicts, the scientist validates, and both improve in a [virtuous cycle](https://www.mckinsey.com/industries/life-sciences/our-insights/the-synthesis/how-pharma-is-rewriting-the-ai-playbook-perspectives-from-industry-leaders). Open Terminal makes that cycle accessible to any scientist who can describe what they need — no programming expertise required.
+Industry leaders have described this iterative approach — the model predicts, the scientist validates, and both improve — as a [virtuous cycle](https://www.mckinsey.com/industries/life-sciences/our-insights/the-synthesis/how-pharma-is-rewriting-the-ai-playbook-perspectives-from-industry-leaders). Open Terminal can make that cycle more accessible to scientists who can describe what they need in natural language.
 
 #### Detecting Safety Signals in Pharmacovigilance Data
 
@@ -96,7 +96,7 @@ A pharmacovigilance scientist is running a routine disproportionality screen on 
 
 *"Calculate the proportional reporting ratio (PRR) and reporting odds ratio (ROR) with 95% confidence intervals for all hepatic preferred terms in this dataset. Generate three visualizations: a forest plot of PRR values for all hepatic PTs that cross the signaling threshold (PRR ≥ 2, chi-squared ≥ 4, N ≥ 3), a time-to-onset histogram for the flagged events grouped by seriousness, and a bubble chart showing case volume by preferred term on the x-axis, PRR on the y-axis, and bubble size scaled to the proportion of serious cases."*
 
-The AI processes the dataset, runs the statistical calculations, and returns three publication-quality figures. The forest plot confirms that three hepatic PTs exceed the signaling threshold. The time-to-onset histogram shows a concentration in the first 90 days — suggesting a dose-dependent mechanism rather than idiosyncratic injury. The bubble chart gives the scientist an at-a-glance view of which terms carry the most signal weight. She downloads the figures, attaches them to a signal evaluation report, and has a preliminary assessment ready for the safety committee by end of day — work that would normally take a full analyst a week of back-and-forth with the biostatistics team.
+The AI processes the dataset, runs the statistical calculations, and returns three publication-quality figures. The forest plot confirms that three hepatic PTs exceed the signaling threshold. The time-to-onset histogram shows a concentration in the first 90 days — suggesting a dose-dependent mechanism rather than idiosyncratic injury. The bubble chart gives the scientist an at-a-glance view of which terms carry the most signal weight. She downloads the figures, attaches them to a signal evaluation report, and has a preliminary assessment ready for the safety committee — reducing the iteration time between the pharmacovigilance scientist and the computational analysis.
 
 ![Open Terminal with pharmacovigilance signal detection visualizations](images/terminal_pv_signals.gif)
 
@@ -208,5 +208,11 @@ For organizations that want deployment guidance, [Open WebUI Enterprise](https:/
 *Note: No software alone establishes regulatory compliance. Organizations should validate controls, policies, and use cases with qualified regulatory, legal, and security teams.*
 
 **[Learn more about Enterprise → sales@openwebui.com](mailto:sales@openwebui.com)**
+
+---
+
+### Disclaimer
+
+*Open WebUI is a general-purpose AI platform, not a pharmaceutical or life sciences product validated for any specific regulatory standard (including GxP, 21 CFR Part 11, EU Annex 11, or ICH guidelines). All compliance determinations — including computerized system validation, data integrity, electronic records requirements, and any other applicable regulatory framework — are the sole responsibility of the deploying organization. AI-generated content is not scientific, medical, or regulatory advice and is not a substitute for qualified professional judgment. All AI outputs must be reviewed and verified by qualified scientists before use in any regulated context.*
 
 ---

@@ -2,7 +2,7 @@
 
 *For R&D leaders, CIOs, and digital transformation executives evaluating AI solutions for their organization.*
 
-*This article is for informational purposes only and does not constitute regulatory, legal, or compliance advice. Organizations should evaluate AI deployments with qualified counsel based on their regulatory environment, therapeutic areas, and data governance obligations.*
+*This article is for informational purposes only and does not constitute scientific, medical, regulatory, legal, or compliance advice. Organizations should evaluate AI deployments with qualified counsel based on their regulatory environment, therapeutic areas, and data governance obligations.*
 
 ![Private AI for Pharma](images/hero.png)
 
@@ -10,15 +10,15 @@
 
 ## Why This Question Matters Now
 
-According to a Mordor Intelligence estimate, the pharmaceutical industry's AI market is [projected to reach $25.7 billion by 2030](https://www.mordorintelligence.com/industry-reports/artificial-intelligence-in-pharmaceutical-market), up from roughly $4 billion at the time of that analysis. Stanford's 2025 AI Index [estimated more than $250 billion](https://hai.stanford.edu/ai-index/2025-ai-index-report/economy) in AI investment across all sectors. Yet amid this surge, medicine makers have yet to see substantially shorter development timelines or meaningful improvements in clinical success rates. The gap isn't whether to adopt AI, but how it can be adopted effectively.
+According to a Mordor Intelligence estimate, the pharmaceutical industry's AI market is [projected to reach $25.7 billion by 2030](https://www.mordorintelligence.com/industry-reports/artificial-intelligence-in-pharmaceutical-market), up from roughly $4 billion at the time of that analysis. Stanford's 2025 AI Index [estimated more than $250 billion](https://hai.stanford.edu/ai-index/2025-ai-index-report/economy) in AI investment across all sectors. Yet amid this surge, medicine makers have broadly yet to see substantially shorter development timelines or meaningful improvements in clinical success rates. The gap isn't whether to adopt AI, but how it can be adopted effectively.
 
 The numbers reveal the disconnect. A 2024 Kiteworks study reported that [**83% of pharmaceutical companies operate without automated safeguards**](https://www.contractpharma.com/exclusives/ai-data-security-the-83-compliance-gap-facing-pharmaceutical-companies/) to prevent sensitive data from leaking through AI tools. Only 17% have implemented technical controls like DLP scanning. The rest rely on training emails (40%), warnings without follow-up (20%), or have no AI usage policy at all (13%). McKinsey's [State of AI report](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-how-organizations-are-rewiring-to-capture-value) reported that 47% of organizations using generative AI have already experienced at least one negative consequence, with cybersecurity leading the list. Meanwhile, companies that simply [bolt AI onto existing workflows](https://www.mckinsey.com/industries/life-sciences/our-insights/the-synthesis/how-pharma-is-rewriting-the-ai-playbook-perspectives-from-industry-leaders) are having trouble capturing meaningful value.
 
 That backdrop is pushing some pharma companies to ask a more fundamental question: rather than relying solely on third-party AI platforms, **what would it take to run AI internally**? Four challenges are driving the conversation:
 
-**The data you most want AI to analyze is the data you can least afford to expose.** Pre-IND compound structures, unpublished mechanism-of-action data, clinical endpoint designs, and manufacturing process parameters, for example, make up the intellectual property that underpins your pipeline. Sending it to a cloud LLM means relinquishing control. Even with contractual protections, once data hits a third-party API, it can be difficult to fully guarantee how it's stored, cached, or used for model improvement. For organizations where a single patent filing depends on maintaining trade secret protection, that trade-off can be difficult to accept.
+**The data you most want AI to analyze is the data you can least afford to expose.** Pre-IND compound structures, unpublished mechanism-of-action data, clinical endpoint designs, and manufacturing process parameters, for example, make up the intellectual property that underpins your pipeline. Sending it to a cloud LLM can raise questions about control. Even with contractual protections, once data hits a third-party API, it can be difficult to fully guarantee how it's stored, cached, or used for model improvement. For organizations where a single patent filing depends on maintaining trade secret protection, that trade-off can be difficult to accept.
 
-**Regulated workflows demand validated, auditable systems.** If a scientist uses an LLM to draft a clinical study report section, summarize adverse events, or review CMC documentation, the tool that produced that output may come under scrutiny similar to any computerized system, depending on the intended use and the organization's regulatory framework. Regulators expect electronic records with audit trails, access controls, and attributable authorship. A SaaS chatbot that can't tell you who asked what, when, or what sources informed the answer raises questions under those expectations.
+**Regulated workflows demand validated, auditable systems.** If a scientist uses an LLM to draft a clinical study report section, summarize adverse events, or review CMC documentation, the tool that produced that output may come under scrutiny similar to any computerized system, depending on the intended use and the organization's regulatory framework. Regulators expect electronic records with audit trails, access controls, and attributable authorship. Any AI tool that can't tell you who asked what, when, or what sources informed the answer raises questions under those expectations.
 
 **Scientific hallucinations compound through the pipeline.** When an AI fabricates a drug-drug interaction, misattributes a clinical outcome to the wrong study arm, or cites a retracted paper, the consequences aren't just embarrassing. They can contaminate safety assessments, mislead regulatory reviewers, and delay or derail programs. Scientists need every AI-generated claim traceable to a source document they can verify themselves.
 
@@ -58,7 +58,7 @@ These aren't unique to any one product, but they are the criteria that organizat
 
 #### Querying Internal Documents with Source Citations
 
-A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI, configured with the company's internal document library, and queries: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response can draw from internal clinical study reports, can cite each by document name with relevance scores, and can structure the summary in a format consistent with ICH E3 guidelines. She clicks each citation to verify it against the source PDF. The conversation can be logged under her SSO identity for search and audit workflows.
+A regulatory affairs scientist is preparing a Module 2.7 clinical summary for an eCTD submission. She opens Open WebUI, configured with the company's internal document library, and queries: *"Summarize the primary efficacy endpoints from our Phase III trials for compound X, including the statistical methods used."* The response can draw from internal clinical study reports, can cite each by document name with relevance scores, and can structure the summary in a format the scientist can adapt to their reporting requirements. She clicks each citation to verify it against the source PDF. The conversation can be logged under her SSO identity for search and audit workflows.
 
 Two weeks later, during an internal pre-submission readiness review, a colleague asks how a specific claim in the summary was generated. The QA team can pull up the audit trail: the exact query, the AI response, the source documents cited, and the timestamp — all attributable to a named user, all retained on company-controlled infrastructure. That level of traceability is increasingly emphasized in regulatory guidance.
 
@@ -68,7 +68,7 @@ Two weeks later, during an internal pre-submission readiness review, a colleague
 
 The example above shows how Open WebUI can ground responses in source documents — the scientist asks a question, and the AI pulls from the company's CSRs to produce a cited summary. But text summaries may not be sufficient for all use cases. When that same scientist needs to present the Verixanib efficacy data to a cross-functional team ahead of a data monitoring committee meeting, she needs visuals — and she needs them built from the same underlying trial data, not recreated manually.
 
-[Open Terminal](https://docs.openwebui.com/features/extensibility/open-terminal) is a sandboxed computing environment built into Open WebUI. Instead of writing code, a scientist provides the relevant data, and describes an analysis in plain language. The AI writes and executes code inside an isolated Docker container on the organization's infrastructure — complete with scientific libraries — and returns the results directly in the chat. The file browser lets scientists upload datasets, preview outputs, and download finished artifacts without ever leaving the interface.
+[Open Terminal](https://docs.openwebui.com/features/extensibility/open-terminal) is a sandboxed computing environment built into Open WebUI. Instead of writing code, a scientist provides the relevant data, and describes an analysis in plain language. The AI writes and executes code inside an isolated Docker container on the organization's infrastructure — which can include scientific libraries — and returns the results directly in the chat. The file browser lets scientists upload datasets, preview outputs, and download finished artifacts without ever leaving the interface.
 
 She switches to an Open Terminal session, attaches the consolidated Verixanib efficacy dataset from the company's Knowledge collection — data corresponding to the CSRs she just queried — and types:
 
@@ -129,13 +129,13 @@ Open WebUI includes a group-based access control system. The table below shows o
 | **Regulatory Affairs** | Full | eCTD templates, FDA/EMA guidance, precedent correspondence | Document extraction *(structured data from regulatory letters)* |
 | **Support Staff** | Basic tasks only | Company policies, HR procedures, training materials | No file upload, no web search, no terminal access |
 
-Groups can synchronize with your identity provider (Okta, Azure AD, Ping Identity) via OAuth, so functional group membership can stay aligned with your organization's directory.
+Groups can synchronize with your identity provider (such as Okta, Azure AD, or Ping Identity) via OAuth, so functional group membership can stay aligned with your organization's directory.
 
 ---
 
 ## What Infrastructure Is Involved
 
-*This section is a reference for your IT or infrastructure team. If you're evaluating at a strategic level, the key takeaway is simple: a self-hosted AI platform can run on existing infrastructure (VMware, Azure, AWS, or bare metal), scale with the organization, and be deployed with minimal external dependencies.*
+*This section is a reference for your IT or infrastructure team. If you're evaluating at a strategic level, the key takeaway is simple: a self-hosted AI platform can run on existing infrastructure (VMware, Azure, AWS, or bare metal), scale with the organization, and be deployed with dependencies that can run on internal infrastructure.*
 
 For large pharma organizations (500–10,000+ employees), a production deployment typically requires high availability, data isolation, and infrastructure that can support regulatory requirements. Here's a reference architecture using Open WebUI — for full deployment instructions, see the **[Technical Setup Guide](setup.md)**.
 
@@ -185,8 +185,8 @@ flowchart TB
 - **Stateless application nodes** — horizontal scaling allows capacity to flex with demand across the organization
 - **Inference can run locally** — via Ollama (lightweight models) and vLLM (large models with GPU optimization), so prompts can stay on-network when configured accordingly
 - **Unified data layer** — PostgreSQL handles both application data and vector search, reducing operational complexity
-- **Redis session coordination** — enables multi-node deployments where any instance can serve any request seamlessly
-- **Sandboxed Open Terminal containers** — each terminal runs in an isolated Docker container with resource limits enforced; scientists get a full computing environment while IT maintains control
+- **Redis session coordination** — enables multi-node deployments where any instance can serve any request without requiring session affinity
+- **Sandboxed Open Terminal containers** — each terminal runs in an isolated Docker container with resource limits enforced; scientists get a sandboxed computing environment while IT maintains control
 
 ---
 
@@ -213,6 +213,6 @@ For organizations that want deployment guidance, [Open WebUI Enterprise](https:/
 
 ### Disclaimer
 
-*Open WebUI is a general-purpose AI platform, not a pharmaceutical or life sciences product validated for any specific regulatory standard (including GxP, 21 CFR Part 11, EU Annex 11, or ICH guidelines). All compliance determinations — including computerized system validation, data integrity, electronic records requirements, and any other applicable regulatory framework — are the sole responsibility of the deploying organization. AI-generated content is not scientific, medical, or regulatory advice and is not a substitute for qualified professional judgment. All AI outputs must be reviewed and verified by qualified scientists before use in any regulated context.*
+*Open WebUI is a general-purpose AI platform, not a pharmaceutical or life sciences product validated for any specific regulatory standard (including GxP, 21 CFR Part 11, EU Annex 11, or ICH guidelines). All compliance determinations — including computerized system validation, data integrity, electronic records requirements, and any other applicable regulatory framework — are the sole responsibility of the deploying organization. AI-generated content is not scientific, medical, or regulatory advice and is not a substitute for qualified professional judgment. All AI outputs must be reviewed and verified by qualified scientists before use in any regulated context. Open WebUI is not a medical device and has not been cleared, approved, or registered with the FDA or any other regulatory authority as medical device software.*
 
 ---

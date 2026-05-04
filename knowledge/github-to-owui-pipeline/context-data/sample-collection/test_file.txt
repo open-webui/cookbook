@@ -1,0 +1,5 @@
+This is a sample text file that will be synced to OpenWebUI.
+
+It demonstrates how text files are handled by the knowledge sync pipeline.
+
+You can add any plain text content here and it will be available for your AI assistant to access.

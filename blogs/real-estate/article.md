@@ -194,11 +194,19 @@ flowchart TB
         otel["OpenTelemetry<br/>Collector"]
     end
 
+    subgraph integrations["External Integrations"]
+        idp["Identity Provider<br/>(Okta / Azure AD / Google Workspace)<br/>SSO & Role Sync"]
+        mls["Flexmls MCP Server<br/>(Live MLS Data / Subscriber Auth)"]
+        txdocs["Transaction Management<br/>(Dotloop / SkySlope)<br/>Document Ingestion"]
+    end
+
     clients --> proxy
     proxy --> owui
     owui --> data
     owui --> inference
     owui -.-> optional
+    owui -.-> integrations
+    idp -.-> lb
 ```
 
 **Key design decisions:**
@@ -206,6 +214,7 @@ flowchart TB
 - **Inference can run locally** — via Ollama (lightweight models) and vLLM (large models with GPU optimization), so agent prompts and client documents can remain on-network when configured accordingly
 - **Unified data layer** — PostgreSQL handles both application data and vector search, reducing operational complexity and keeping the brokerage's transaction document index on-premises
 - **Redis session coordination** — enables multi-node deployments without requiring session affinity, supporting brokerage deployments across multiple locations
+- **External integrations are optional and brokerage-specific** — the Flexmls MCP Server enables live MLS data queries with subscriber-level authentication; the identity provider enables role sync against the brokerage's existing directory; transaction management platforms can feed signed documents into the knowledge base. Each integration carries its own subscriber agreement and data governance review
 
 ---
 

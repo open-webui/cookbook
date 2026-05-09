@@ -59,7 +59,7 @@ That question is what pushes some brokerages toward evaluating self-hosted AI. W
 
 - **Configurable audit and retention controls.** Conversation logging, configurable retention periods, SSO integration, and restrictions on chat deletion that can support brokerage governance requirements, E&O insurance documentation obligations, and any regulatory inquiries. Having a record of what AI-assisted queries produced what outputs — tied to named users — is increasingly relevant in an environment where fair housing enforcement is expanding to cover AI tools.
 
-- **Computational capabilities accessible through natural language.** The ability for agents and team leads to run real analysis — market trend charts, pricing visualizations, MLS data summaries — through conversational prompts, without requiring programming expertise or reliance on a dedicated data analyst. This can help bridge the gap between the market intelligence agents need and the technical barriers that currently prevent many of them from accessing it.
+- **Scheduled, repeatable workflows.** The ability to define recurring AI tasks — a daily MLS briefing for buyer's agents, a weekly market summary for listing agents, a monthly pipeline report for management — that run automatically against the brokerage's tools and knowledge bases, post their output back to the team, and surface on a shared calendar so everyone can see what's coming. This shifts AI from an ad-hoc assistant that someone has to remember to use into operational infrastructure that produces value on its own cadence.
 
 These aren't unique to any one product. They are the criteria that brokerage technology leaders exploring self-hosted AI tend to evaluate against.
 
@@ -84,6 +84,32 @@ The response can draw from the brokerage's internal comp library, can cite each 
 The conversation is logged under her SSO identity. If a fair housing question ever arose about how a pricing recommendation was developed, the conversation log — showing which transactions were queried and what the AI returned — can be retained in the brokerage's system, rather than existing only in a personal email account.
 
 ![Open WebUI chat interface with comparable sales citations and relevance scores](images/chat_citations.png)
+
+#### Daily MLS Briefing via Scheduled Automation
+
+A listing agent starts every morning the same way: pulling up new listings, recent price drops, and pendings in her coverage area to spot anything she should call clients about. Done by hand — flipping between MLS searches, copying notes, building a mental list — it's a 20-minute task before her first appointment.
+
+Open WebUI exposes the brokerage's MLS through tool calls — in this configuration, against a sanctioned MCP server with subscriber-level authentication. She can ask ad-hoc questions and the model fires the appropriate query against the connected MLS source:
+
+*"What new listings hit the MLS today in 94110, 94131, and 94609? Format as a quick bulleted list with address, beds/baths, and list price."*
+
+The model calls `get_recent_listings`, retrieves matching rows, and returns a formatted summary. Each tool call is visible in the chat, tied to the user's identity in the conversation log, and bounded by the MLS subscriber permissions of the connected account.
+
+![Open WebUI showing a tool call to get_recent_listings returning new MLS listings](images/automation_tool_call.png)
+
+The same query — generalized to cover new listings, price drops, status changes, weekend open houses, and a market snapshot — can be saved as a scheduled automation that runs each morning before showings start. The agent writes the briefing format she wants once, picks a model with native function calling, sets a recurrence, and the workflow runs itself from then on.
+
+![Daily MLS Briefing automation editor with the full prompt, a daily schedule, gpt-5.4 selected, an Active status, and the next scheduled run](images/automation_editor.png)
+
+When the schedule fires, the model fans out across the relevant MLS tools, formats the briefing, and produces a chat output the agent reads with her morning coffee.
+
+![Daily MLS automation chat showing the full sequence of tool calls followed by the structured New Listings briefing](images/automation_daily_brief.png)
+
+In the same run, the model can call `create_calendar_event` to add weekend open houses to her calendar with reminders set 60 minutes before each one — so the events show up alongside the rest of her schedule, ready to attend.
+
+![Open WebUI Month-view calendar with two open-house events created by the automation, plus a Scheduled Tasks calendar toggle for upcoming automation runs](images/calendar_open_houses.png)
+
+Past automation runs also surface on a virtual Scheduled Tasks calendar, giving the agent a single timeline of what's coming and what already ran. The brokerage gets a consistent, auditable morning-briefing workflow that doesn't depend on any one agent remembering to run it.
 
 #### Disclosure Packet Analysis
 
@@ -138,7 +164,7 @@ Open WebUI provides a group-based access control system. The table below shows o
 | **Transaction Coordinators** | Advanced analysis only | Contract templates, deadline checklists, title and escrow contacts, state-specific contingency guides | Document extraction *(extract dates, parties, and contingencies from purchase agreements)* |
 | **Property Managers** | Full | Lease templates, maintenance SOPs, fair housing guidance, local rental regulations | RAG-only mode *(responses grounded in curated internal documents)* |
 | **Administrative Staff** | Basic tasks only | Office policies, HR procedures, training materials | No file upload, no web search |
-| **Brokerage Management** | Full | All knowledge bases, analytics exports, agent performance data | Open Terminal *(market trend analysis, production dashboards, brokerage reporting)*, all permissions |
+| **Brokerage Management** | Full | All knowledge bases, analytics exports, agent performance data | Automation management *(create and schedule org-wide AI workflows)*, all permissions |
 
 Groups can synchronize with the organization's identity provider (such as Okta, Azure AD, or Google Workspace) via OAuth, so role membership can stay aligned with the organization's directory as agents join, leave, or change teams.
 

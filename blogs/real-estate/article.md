@@ -97,20 +97,6 @@ The agent reviews each finding against the source pages before sending a summary
 
 ![Open WebUI with disclosure packet analysis and flagged items](images/terminal_disclosure.gif)
 
-#### MLS Market Trend Visualization with Open Terminal
-
-A team lead at a mid-size residential brokerage prepares a monthly market report for his top 30 seller clients. He's been doing this manually for three years: export data from the MLS, paste it into a spreadsheet, create charts in Excel, format a PDF. The process takes most of a Friday afternoon.
-
-He exports his MLS market activity report for Q1 2026 — active listings, pending sales, and closed transactions for his core zip codes — as a CSV file. He uploads it to an [Open Terminal](https://docs.openwebui.com/features/extensibility/open-terminal) session in Open WebUI, a sandboxed computing environment where code can be generated and executed directly in the interface. He types:
-
-*"From this MLS export, create three visualizations: (1) a line chart showing median days on market by week over the past 90 days, (2) a scatter plot of list price versus close price for all closed sales, color-coded by property type — single family, condo, and multi-unit — and (3) a bar chart of average price per square foot by neighborhood for single-family homes. Use a clean, presentation-ready style."*
-
-The AI can read the dataset, write and execute the visualization code inside a sandboxed Docker container on the brokerage's own infrastructure, and return the finished figures directly in the chat. He reviews the output and notices that one neighborhood's price-per-sqft appears to have declined over the past six weeks — a trend his agents hadn't flagged in their weekly check-ins. He downloads the figures and embeds them in his client report.
-
-When configured to run without external connections, the MLS data can remain on the brokerage's own infrastructure. The team lead has a potential talking point — that neighborhood pricing shift — that his agents can investigate further ahead of seller consultations.
-
-![Open Terminal generating market trend visualizations from an MLS export CSV](images/terminal_market_analysis.gif)
-
 #### Purchase Agreement Review and Deadline Extraction
 
 A transaction coordinator is managing 14 active escrows. A new purchase agreement arrives — a 23-page California Residential Purchase Agreement for a townhome in contract. She needs to set up the transaction file, enter all key dates into the timeline tracker, and alert the buyer's agent to any contingency deadlines that fall on unusual dates.
@@ -121,7 +107,7 @@ The AI can parse the agreement and return a structured checklist with key contin
 
 She forwards the checklist to the buyer's agent along with a note about the holiday deadline and the flagged clause. The holiday conflict is surfaced early in escrow — rather than close to the deadline when a missed date becomes a dispute. The agent follows up with the listing side to clarify the credit language before the appraisal is ordered.
 
-This is the kind of operational workflow that firms like [ListedKit AI](https://listedkit.com/) and [Trackxi](https://trackxi.com/) have built purpose-built tools around — AI-powered contract extraction that processes agreements in seconds and calculates deadline chains automatically. Open WebUI could offer a brokerage a similar capability through a configurable, self-hosted platform, with the added consideration that the purchase agreement documents could remain on brokerage-controlled infrastructure rather than third-party servers.
+Contract extraction workflows like this typically take a transaction coordinator the better part of an afternoon when done manually — opening the agreement, transcribing dates, double-checking holiday calendars, and building the chain of contingency dependencies. A document-aware AI workflow can process the same agreement in seconds and return a deadline chain ready for the team's transaction management system. Running it on a self-hosted platform means the purchase agreement, the buyer's financial information, and the negotiated terms can stay on brokerage-controlled infrastructure rather than passing through third-party servers — particularly relevant when the agreement contains pre-approval letters, bank statements, or other client-sensitive attachments.
 
 #### Fair Housing Compliance Review
 
@@ -197,7 +183,7 @@ flowchart TB
     subgraph integrations["External Integrations"]
         idp["Identity Provider<br/>(Okta / Azure AD / Google Workspace)<br/>SSO & Role Sync"]
         mls["Flexmls MCP Server<br/>(Live MLS Data / Subscriber Auth)"]
-        txdocs["Transaction Management<br/>(Dotloop / SkySlope)<br/>Document Ingestion"]
+        txdocs["Transaction Management<br/>Document Ingestion"]
     end
 
     clients --> proxy

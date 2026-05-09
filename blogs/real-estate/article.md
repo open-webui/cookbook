@@ -83,7 +83,7 @@ The response can draw from the brokerage's internal comp library, can cite each 
 
 The conversation is logged under her SSO identity. If a fair housing question ever arose about how a pricing recommendation was developed, the conversation log — showing which transactions were queried and what the AI returned — can be retained in the brokerage's system, rather than existing only in a personal email account.
 
-![Open WebUI chat interface with comparable sales citations and relevance scores](images/chat_citations.png)
+![Open WebUI CMA response with citations linked back to the uploaded transactions document and explicit reasoning for which closings were excluded from the comp set](images/chat_citations.png)
 
 #### Daily MLS Briefing via Scheduled Automation
 

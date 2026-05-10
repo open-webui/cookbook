@@ -121,7 +121,7 @@ The AI can read the packet and return a structured analysis. It surfaces two ite
 
 The agent reviews each finding against the source pages before sending a summary to her buyer. She recommends extending the contingency to allow for a second-opinion electrical inspection. The conversation is retained in the brokerage's system for E&O documentation — a record of the due diligence workflow her firm supported.
 
-![Open WebUI with disclosure packet analysis and flagged items](images/terminal_disclosure.gif)
+![Open WebUI disclosure-packet response flagging the unresolved HOA special assessment with citations back to the source document, plus an explicit acknowledgment of what the provided excerpts do not cover](images/disclosure_packet_analysis.png)
 
 #### Purchase Agreement Review and Deadline Extraction
 

@@ -155,7 +155,7 @@ This kind of pre-publication review workflow is becoming more relevant, not less
 
 Open WebUI provides a group-based access control system. The table below shows one example of how a brokerage might map functional roles to AI capabilities. **This is an illustrative configuration — organizations should design their own role structure based on their specific needs, risk tolerance, governance requirements, and applicable MLS subscriber agreements.**
 
-![Admin panel showing brokerage role configuration](images/admin_groups.png)
+![Open WebUI Admin Panel showing the six brokerage groups — Listing Agents, Buyer's Agents, Transaction Coordinators, Property Managers, Administrative Staff, and Brokerage Management — with member counts](images/admin_groups.png)
 
 | Role | AI Capabilities | Knowledge Bases | Special Permissions |
 |---|---|---|---|

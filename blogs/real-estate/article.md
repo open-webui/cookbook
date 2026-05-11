@@ -107,7 +107,7 @@ In the same run, the model can call `create_calendar_event` to add weekend open 
 
 ![Open WebUI Month-view calendar with two open-house events created by the automation, plus a Scheduled Tasks calendar toggle for upcoming automation runs](images/calendar_open_houses.png)
 
-Past automation runs also surface on a virtual Scheduled Tasks calendar, giving the agent a single timeline of what's coming and what already ran. The brokerage gets a consistent, auditable morning-briefing workflow that doesn't depend on any one agent remembering to run it.
+Past automation runs also surface on a virtual Scheduled Tasks calendar, giving the agent a single timeline of what's coming and what already ran. The brokerage can build a consistent, auditable morning-briefing workflow that doesn't depend on any one agent remembering to run it.
 
 #### Disclosure Packet Analysis
 
@@ -131,7 +131,7 @@ The AI can parse the agreement and return a structured checklist with key contin
 
 She forwards the checklist to the buyer's agent along with a note about the holiday deadline and the flagged clause. The holiday conflict is surfaced early in escrow, rather than close to the deadline when a missed date becomes a dispute. The agent follows up with the listing side to clarify the credit language before the appraisal is ordered.
 
-Contract extraction workflows like this typically take a transaction coordinator the better part of an afternoon when done manually: opening the agreement, transcribing dates, double-checking holiday calendars, and building the chain of contingency dependencies. A document-aware AI workflow can process the same agreement in seconds and return a deadline chain ready for the team's transaction management system. Running it on a self-hosted platform means the purchase agreement, the buyer's financial information, and the negotiated terms can stay on brokerage-controlled infrastructure rather than passing through third-party servers, which is particularly relevant when the agreement contains pre-approval letters, bank statements, or other client-sensitive attachments.
+Contract extraction workflows like this typically take a transaction coordinator the better part of an afternoon when done manually: opening the agreement, transcribing dates, double-checking holiday calendars, and building the chain of contingency dependencies. A document-aware AI workflow can process the same agreement in a fraction of that time and return a deadline chain ready for review. When the platform is configured to use on-network inference, the purchase agreement, the buyer's financial information, and the negotiated terms can stay on brokerage-controlled infrastructure rather than passing through third-party servers, which is particularly relevant when the agreement contains pre-approval letters, bank statements, or other client-sensitive attachments.
 
 #### Fair Housing Compliance Review
 
